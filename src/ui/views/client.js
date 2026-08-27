@@ -1,21 +1,22 @@
-// FICHA DO CLIENTE — os dados dele, todas as dívidas e o histórico de
-// pagamentos. Um cliente pode ter várias dívidas ao mesmo tempo, e cada uma
-// aparece inteira: termos, saldo, contagem de parcelas e próximo vencimento.
+// FICHA DO CLIENTE — os dados dele, as dívidas e o histórico de pagamentos.
+//
+// Um cliente pode ter várias dívidas ao mesmo tempo, e cada uma aparece
+// inteira. Para que "inteira" não vire "amontoada", cada dívida mostra por
+// padrão só o essencial — saldo, termos e situação — e abre o resto sob toque.
 
 import { esc, cabecalhoSecao, estadoVazio } from '../dom.js';
 import { icones } from '../icons.js';
 import {
-  trioDeValores, seloDivida, progressoDivida, termosDaDivida,
-  fatosDaDivida, contadoresDeParcelas, linhaParcela,
+  trioDeValores, situacaoDaDivida, progressoDivida, termosDaDivida,
+  fatosDaDivida, linhaParcela,
 } from '../pieces.js';
 import { formatarReais } from '../../core/money.js';
 import { formatarData, formatarDataCurta, comparar } from '../../core/dates.js';
 import { estadoDoCliente } from '../../core/portfolio.js';
 import { formatarTelefone } from '../../core/model.js';
 
-// Quais dívidas estão com a lista de parcelas aberta. Estado de tela, não de
-// dado — por isso vive aqui e não no armazenamento.
-const parcelasAbertas = new Set();
+// Quais dívidas estão abertas na tela. Estado de tela, não de dado.
+const dividasAbertas = new Set();
 
 export function telaCliente(ctx) {
   const cliente = ctx.store.cliente(ctx.params.id);
@@ -24,8 +25,7 @@ export function telaCliente(ctx) {
       titulo: 'Cliente',
       voltar: true,
       html: estadoVazio({
-        icone: icones.alerta,
-        titulo: 'Cliente não encontrado',
+        titulo: 'Cliente não encontrado.',
         texto: 'Ele pode ter sido removido neste aparelho.',
         botao: { acao: 'ir-clientes', rotulo: 'Ver clientes' },
       }),
@@ -38,40 +38,41 @@ export function telaCliente(ctx) {
 
   return {
     titulo: cliente.nome,
+    tituloEmDestaque: true,
     voltar: true,
     acaoTopo: { acao: 'editar-cliente', icone: icones.lapis, rotulo: 'Editar cliente' },
     html: `
-      ${blocoContato(cliente)}
+      ${contato(cliente)}
 
       ${estado.contagem.dividas > 0 ? trioDeValores([
         { rotulo: 'A receber', cents: estado.aReceberCents },
         { rotulo: 'Na rua', cents: estado.naRuaCents },
-        { rotulo: 'Atrasado', cents: estado.atrasadoCents, tom: estado.atrasadoCents > 0 ? 'tom-negativo' : 'tom-fraco' },
+        { rotulo: 'Atrasado', cents: estado.atrasadoCents, tom: estado.atrasadoCents > 0 ? 'tom-atraso' : 'tom-fraco' },
       ]) : ''}
 
       <section class="secao">
         ${cabecalhoSecao('Dívidas', dividas.length > 0 ? `${estado.contagem.abertas} em aberto` : null)}
         ${dividas.length === 0
           ? estadoVazio({
-              icone: icones.dividas,
-              titulo: 'Nenhuma dívida registrada',
+              titulo: 'Nenhuma dívida registrada.',
               texto: 'Cadastre a primeira dívida deste cliente.',
-              botao: { acao: 'nova-divida', rotulo: 'Nova dívida', icone: icones.mais },
+              botao: { acao: 'nova-divida', rotulo: 'Nova dívida' },
             })
-          : dividas.map(d => cartaoDivida(d, ctx)).join('')}
+          : dividas.map(d => blocoDivida(d, ctx)).join('')}
       </section>
 
-      ${dividas.length > 0 ? `<button class="botao botao-contorno botao-bloco" style="margin-top:12px"
-        data-acao="nova-divida">${icones.mais}Nova dívida para ${esc(primeiroNome(cliente.nome))}</button>` : ''}
+      ${dividas.length > 0 ? `<div class="acoes">
+        <button class="acao" data-acao="nova-divida">Nova dívida</button>
+      </div>` : ''}
 
       ${pagamentos.length > 0 ? `<section class="secao">
-        ${cabecalhoSecao('Histórico de pagamentos', `${formatarReais(estado.recebidoCents)} recebidos`)}
-        <section class="cartao">${pagamentos.map(p => linhaPagamento(p)).join('')}</section>
+        ${cabecalhoSecao('Pagamentos', `${formatarReais(estado.recebidoCents)} recebidos`)}
+        <div class="itens">${pagamentos.map(linhaPagamento).join('')}</div>
       </section>` : ''}
 
-      <section class="secao">
-        <button class="botao botao-discreto" data-acao="excluir-cliente">${icones.lixeira}Excluir cliente</button>
-      </section>
+      <div class="acoes" style="margin-top:44px">
+        <button class="acao acao-perigo" data-acao="excluir-cliente">Excluir cliente</button>
+      </div>
     `,
   };
 }
@@ -83,68 +84,60 @@ function ordenarDividas(a, b) {
   return 0;
 }
 
-function blocoContato(cliente) {
-  const linhas = [
-    cliente.telefone && { icone: icones.telefone, texto: formatarTelefone(cliente.telefone), link: `tel:${cliente.telefone.replace(/\D/g, '')}` },
-    cliente.endereco && { icone: icones.local, texto: cliente.endereco },
-    cliente.observacoes && { icone: icones.nota, texto: cliente.observacoes },
+function contato(cliente) {
+  const partes = [
+    cliente.telefone && { texto: formatarTelefone(cliente.telefone), link: `tel:${cliente.telefone.replace(/\D/g, '')}` },
+    cliente.endereco && { texto: cliente.endereco },
+    cliente.observacoes && { texto: cliente.observacoes },
   ].filter(Boolean);
 
-  if (linhas.length === 0) {
-    return `<section class="cartao"><div class="linha">
-      <span class="linha-corpo"><span class="linha-sub">Sem telefone, endereço ou observações cadastrados.</span></span>
-      <span class="linha-fim"><button class="botao botao-discreto" data-acao="editar-cliente">Adicionar</button></span>
-    </div></section>`;
+  if (partes.length === 0) {
+    return `<p class="nota" style="margin-top:18px">
+      Sem telefone, endereço ou observações.
+      <button class="acao acao-fraca" style="border-bottom:1px solid var(--linha)" data-acao="editar-cliente">Adicionar</button>
+    </p>`;
   }
 
-  return `<section class="cartao">${linhas.map(l => `
-    <div class="linha">
-      <span class="tom-fraco" style="display:flex">${l.icone}</span>
-      <span class="linha-corpo">
-        <span class="linha-titulo" style="font-weight:450;white-space:normal">${
-          l.link ? `<a href="${esc(l.link)}" style="color:inherit;text-decoration:none">${esc(l.texto)}</a>` : esc(l.texto)
-        }</span>
-      </span>
-    </div>`).join('')}</section>`;
+  return `<div style="margin-top:18px">${partes.map(p => `
+    <p class="rotulo" style="margin:0 0 4px;color:var(--tinta-2);line-height:1.55">${
+      p.link ? `<a href="${esc(p.link)}" style="color:inherit;text-decoration:none">${esc(p.texto)}</a>` : esc(p.texto)
+    }</p>`).join('')}</div>`;
 }
 
-function cartaoDivida(estado, ctx) {
-  const aberta = parcelasAbertas.has(estado.dividaId);
+function blocoDivida(estado, ctx) {
+  const aberta = dividasAbertas.has(estado.dividaId);
+  const situacao = situacaoDaDivida(estado);
 
-  return `<section class="cartao">
-    <div class="cartao-conteudo" style="padding-bottom:14px">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-        <div>
-          <div class="rotulo-mini">${esc(termosDaDivida(estado))}</div>
-          <div class="valor valor-grande" style="margin-top:4px">${esc(formatarReais(estado.saldoCents))}</div>
-          <div class="rotulo-mini" style="margin-top:2px">
-            ${estado.quitada ? 'dívida quitada' : 'saldo restante'}
-          </div>
-        </div>
-        ${seloDivida(estado)}
-      </div>
-      <div style="margin-top:14px">${progressoDivida(estado)}</div>
+  return `<section style="padding:22px 0 4px;border-top:1px solid var(--linha-fina)">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px">
+      <span class="cifra cifra-grande">${esc(formatarReais(estado.saldoCents))}</span>
+      <span class="item-sub ${situacao.tom}" style="margin:0">${esc(situacao.texto)}</span>
     </div>
+    <p class="rotulo" style="margin:5px 0 0">
+      ${estado.quitada ? 'dívida quitada' : 'saldo restante'} · ${esc(termosDaDivida(estado))}
+    </p>
+    <div style="margin-top:16px">${progressoDivida(estado)}</div>
 
-    ${fatosDaDivida(estado)}
-    ${contadoresDeParcelas(estado)}
-
-    <div style="padding:0 16px 14px;display:flex;gap:8px">
-      ${!estado.quitada ? `<button class="botao botao-primario" style="flex:1"
-        data-acao="pagar" data-divida="${esc(estado.dividaId)}" data-parcela="${estado.proximaParcela.numero}">
+    <div class="acoes" style="margin-top:18px">
+      ${!estado.quitada ? `<button class="acao" data-acao="pagar"
+        data-divida="${esc(estado.dividaId)}" data-parcela="${estado.proximaParcela.numero}">
         Registrar pagamento</button>` : ''}
-      <button class="botao ${estado.quitada ? 'botao-bloco' : ''}" data-acao="alternar-parcelas" data-divida="${esc(estado.dividaId)}">
-        ${aberta ? 'Ocultar' : 'Parcelas'}
+      <button class="acao acao-fraca" data-acao="alternar-divida" data-divida="${esc(estado.dividaId)}">
+        ${aberta ? 'Menos detalhes' : 'Ver detalhes'}
       </button>
     </div>
 
-    ${aberta ? `<div style="border-top:1px solid var(--linha)">
-      ${estado.parcelas.map(p => linhaParcela(p, estado.dividaId, ctx.hoje)).join('')}
-      <div style="padding:12px 16px;border-top:1px solid var(--linha)">
-        <button class="botao botao-discreto" data-acao="excluir-divida" data-divida="${esc(estado.dividaId)}">
-          ${icones.lixeira}Excluir dívida</button>
+    ${aberta ? `
+      ${fatosDaDivida(estado)}
+      <div class="secao" style="margin-top:26px">
+        ${cabecalhoSecao('Parcelas')}
+        <div>${estado.parcelas.map(p => linhaParcela(p, estado.dividaId, ctx.hoje)).join('')}</div>
       </div>
-    </div>` : ''}
+      <div class="acoes">
+        <button class="acao acao-perigo" data-acao="excluir-divida" data-divida="${esc(estado.dividaId)}">
+          Excluir dívida</button>
+      </div>
+    ` : ''}
   </section>`;
 }
 
@@ -159,30 +152,24 @@ function historicoDoCliente(ctx, dividas) {
 }
 
 function linhaPagamento(pagamento) {
-  const divida = pagamento.divida;
   const descricao = pagamento.parcelaNumero
-    ? `Parcela ${pagamento.parcelaNumero} de ${divida.contagem.total}`
-    : 'Pagamento avulso';
+    ? `parcela ${pagamento.parcelaNumero} de ${pagamento.divida.contagem.total}`
+    : 'pagamento avulso';
 
-  return `<button class="linha" data-acao="ver-pagamento" data-pagamento="${esc(pagamento.id)}">
-    <span class="tom-fraco" style="display:flex">${icones.entrada}</span>
-    <span class="linha-corpo">
-      <span class="linha-titulo" style="font-weight:500">${esc(descricao)}</span>
-      <span class="linha-sub">Dívida de ${esc(formatarReais(divida.baseCents))} · ${esc(formatarData(pagamento.data))}</span>
+  return `<button class="item" data-acao="ver-pagamento" data-pagamento="${esc(pagamento.id)}">
+    <span class="item-corpo">
+      <span class="item-nome" style="font-weight:450">${esc(formatarData(pagamento.data))}</span>
+      <span class="item-sub">${esc(descricao)} · dívida de ${esc(formatarReais(pagamento.divida.baseCents))}</span>
     </span>
-    <span class="linha-fim">
-      <span class="valor valor-medio tom-positivo">${esc(formatarReais(pagamento.valorCents))}</span>
-      <span class="rotulo-mini">${esc(formatarDataCurta(pagamento.data))}</span>
+    <span class="item-fim">
+      <span class="cifra cifra-media tom-recebido">${esc(formatarReais(pagamento.valorCents))}</span>
+      <span class="item-sub">${esc(formatarDataCurta(pagamento.data))}</span>
     </span>
   </button>`;
 }
 
-function primeiroNome(nome) {
-  return String(nome).trim().split(/\s+/)[0];
-}
-
-/** Abre ou fecha a lista de parcelas de uma dívida. */
-export function alternarParcelas(dividaId) {
-  if (parcelasAbertas.has(dividaId)) parcelasAbertas.delete(dividaId);
-  else parcelasAbertas.add(dividaId);
+/** Abre ou fecha os detalhes de uma dívida. */
+export function alternarDivida(dividaId) {
+  if (dividasAbertas.has(dividaId)) dividasAbertas.delete(dividaId);
+  else dividasAbertas.add(dividaId);
 }

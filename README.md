@@ -40,6 +40,40 @@ O GitHub Pages publica a raiz do repositório a cada push na `main`, pelo
 workflow `.github/workflows/pages.yml`. Não há etapa de build: o que está
 versionado é exatamente o que é servido.
 
+## Direção visual
+
+A referência não é aplicativo, é página impressa: um extrato bem composto, um
+caderno de anotação caro. A interface inteira é feita de três coisas —
+**espaço em branco, fio de cabelo e tipografia**.
+
+O que o sistema **não** usa, e a regra vale para o que vier depois:
+
+| Não existe | Em vez disso |
+|---|---|
+| cartão branco sobre fundo cinza | o conteúdo mora direto no papel |
+| sombra (nenhuma, em lugar nenhum) | um fio de 1px quando é preciso separar |
+| pílula, chip, selo colorido | a palavra, escrita por extenso |
+| avatar com iniciais | o nome do cliente |
+| ícone decorativo | nada, ou a palavra |
+| barra de abas com ícones | três palavras no rodapé |
+
+Sobraram seis ícones no produto inteiro, todos de navegação ou controle:
+voltar, avançar, buscar, somar, subtrair, editar.
+
+**Tipografia.** Toda quantia é composta em Newsreader (serifada, hospedada em
+`fontes/`, com algarismos de largura fixa) e todo rótulo em fonte de sistema.
+É esse contraste que carrega a hierarquia — não caixa, não cor, não peso de
+borda.
+
+**Cor é informação, não decoração.** A paleta tem tinta, papel e dois tons:
+o do atraso e o do recebido. O atraso aparece porque é para doer um pouco.
+Fora isso, é tinta sobre papel, e o tema escuro é a mesma ideia invertida.
+
+Uma consequência prática está no fim do `style.css`: as classes de tom
+(`.tom-atraso` e companhia) ficam no final do arquivo de propósito, porque
+convivem com classes de componente que também definem cor. Com a mesma
+especificidade, vence quem vem por último — e quem precisa vencer é o tom.
+
 ## Os quatro conceitos financeiros
 
 Eles não são sinônimos, e o sistema nunca os deriva um do outro por atalho:

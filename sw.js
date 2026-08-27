@@ -14,7 +14,8 @@ const CACHE = 'en-controle-v1';
 const ESSENCIAIS = [
   './',
   './index.html',
-  './style.css?v=1',
+  './style.css?v=2',
+  './fontes/newsreader.woff2',
   './manifest.json',
   './icone.svg',
 ];

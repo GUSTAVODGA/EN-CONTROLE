@@ -22,16 +22,18 @@ import { abrirFormularioCliente } from './ui/client-form.js';
 
 import { telaInicio } from './ui/views/home.js';
 import { telaClientes } from './ui/views/clients.js';
-import { telaCliente, alternarParcelas } from './ui/views/client.js';
+import { telaCliente, alternarDivida } from './ui/views/client.js';
 import { telaNovaDivida, prepararNovaDivida, acoesNovaDivida } from './ui/views/new-debt.js';
 import { telaCaixa, acoesCaixa } from './ui/views/cash.js';
 
 const store = criarStore();
 
+// A navegação é feita de palavras. Ícone de aba seria decoração: com três
+// destinos e nomes curtos, o rótulo já é o mais rápido de ler.
 const ABAS = [
-  { rota: '#/', nome: 'inicio', rotulo: 'Início', icone: icones.inicio },
-  { rota: '#/clientes', nome: 'clientes', rotulo: 'Clientes', icone: icones.clientes },
-  { rota: '#/caixa', nome: 'caixa', rotulo: 'Caixa', icone: icones.caixa },
+  { rota: '#/', nome: 'inicio', rotulo: 'Início' },
+  { rota: '#/clientes', nome: 'clientes', rotulo: 'Clientes' },
+  { rota: '#/caixa', nome: 'caixa', rotulo: 'Caixa' },
 ];
 
 const TELAS = {
@@ -114,7 +116,7 @@ function desenhar({ manterFoco = null, preservarRolagem = false } = {}) {
 
   elTopo.innerHTML = `
     ${tela.voltar ? `<button class="topo-acao voltar" data-acao="voltar" aria-label="Voltar">${icones.esquerda}</button>` : ''}
-    <span class="topo-titulo">${esc(tela.titulo)}</span>
+    <span class="topo-titulo ${tela.tituloEmDestaque ? 'nome' : ''}">${esc(tela.titulo)}</span>
     ${tela.acaoTopo ? `<button class="topo-acao" data-acao="${esc(tela.acaoTopo.acao)}"
       aria-label="${esc(tela.acaoTopo.rotulo)}">${tela.acaoTopo.icone}</button>` : ''}
   `;
@@ -125,9 +127,7 @@ function desenhar({ manterFoco = null, preservarRolagem = false } = {}) {
   elAbas.hidden = Boolean(tela.semAbas);
   elAbas.innerHTML = tela.semAbas ? '' : `<div class="abas-interno">${ABAS.map(aba => `
     <button class="aba" data-acao="ir-aba" data-rota="${esc(aba.rota)}"
-      ${aba.nome === ctx.rota.nome ? 'aria-current="page"' : ''}>
-      ${aba.icone}<span>${esc(aba.rotulo)}</span>
-    </button>`).join('')}</div>`;
+      ${aba.nome === ctx.rota.nome ? 'aria-current="page"' : ''}>${esc(aba.rotulo)}</button>`).join('')}</div>`;
 
   if (tela.aoMontar) tela.aoMontar(elTela, ctx);
 
@@ -207,8 +207,8 @@ const ACOES = {
     abrirPagamento(ctx, alvo.dataset.divida, Number(alvo.dataset.parcela));
   },
 
-  'alternar-parcelas'(alvo, ctx) {
-    alternarParcelas(alvo.dataset.divida);
+  'alternar-divida'(alvo, ctx) {
+    alternarDivida(alvo.dataset.divida);
     ctx.atualizar();
   },
 

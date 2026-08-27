@@ -18,27 +18,27 @@ export function abrirFormularioCliente(ctx, clienteExistente = null, aoSalvar) {
     titulo: edicao ? 'Editar cliente' : 'Novo cliente',
     conteudo: `
       <div class="campo">
-        <label class="campo-rotulo" for="cl-nome">Nome</label>
+        <label class="etiqueta" for="cl-nome">Nome</label>
         <input class="entrada" id="cl-nome" value="${esc(c.nome)}" autocomplete="name"
                enterkeyhint="next" placeholder="Nome do cliente">
       </div>
       <div class="campo">
-        <label class="campo-rotulo" for="cl-telefone">Telefone</label>
+        <label class="etiqueta" for="cl-telefone">Telefone</label>
         <input class="entrada" id="cl-telefone" value="${esc(c.telefone)}" inputmode="tel"
                autocomplete="tel" placeholder="(00) 00000-0000">
       </div>
       <div class="campo">
-        <label class="campo-rotulo" for="cl-endereco">Endereço</label>
+        <label class="etiqueta" for="cl-endereco">Endereço</label>
         <input class="entrada" id="cl-endereco" value="${esc(c.endereco)}" autocomplete="street-address"
                placeholder="Rua, número, bairro">
       </div>
       <div class="campo">
-        <label class="campo-rotulo" for="cl-obs">Observações</label>
+        <label class="etiqueta" for="cl-obs">Observações</label>
         <textarea class="entrada" id="cl-obs" placeholder="Referências, horários, o que ajudar na cobrança">${esc(c.observacoes)}</textarea>
       </div>
 
       <div class="folha-acoes">
-        <button class="botao botao-primario botao-bloco botao-alto" id="cl-salvar">${edicao ? 'Salvar alterações' : 'Cadastrar cliente'}</button>
+        <button class="botao botao-primario botao-bloco" id="cl-salvar">${edicao ? 'Salvar alterações' : 'Cadastrar cliente'}</button>
         <button class="botao botao-bloco" id="cl-cancelar">Cancelar</button>
       </div>
     `,

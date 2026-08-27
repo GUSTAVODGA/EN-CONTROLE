@@ -30,21 +30,26 @@ export function tremer(padrao = 8) {
   try { navigator.vibrate?.(padrao); } catch { /* sem suporte, sem problema */ }
 }
 
-/** Cabeçalho de seção com título, contagem opcional e ação à direita. */
-export function cabecalhoSecao(titulo, contagem, acao) {
+/**
+ * Cabeçalho de seção: micro-etiqueta em caixa alta à esquerda e, quando
+ * ajudar, um número discreto à direita.
+ */
+export function cabecalhoSecao(titulo, valor) {
   return `<div class="secao-cabecalho">
-    <span class="secao-titulo">${esc(titulo)}</span>
-    ${contagem !== undefined && contagem !== null ? `<span class="secao-contagem">${esc(contagem)}</span>` : ''}
-    ${acao ? `<button class="secao-link" data-acao="${esc(acao.acao)}"${acao.dados || ''}>${esc(acao.rotulo)}</button>` : ''}
+    <span class="etiqueta">${esc(titulo)}</span>
+    ${valor !== undefined && valor !== null ? `<span class="secao-valor">${esc(valor)}</span>` : ''}
   </div>`;
 }
 
-/** Estado vazio: ícone, título, texto e, quando fizer sentido, uma saída. */
-export function estadoVazio({ icone, titulo, texto, botao }) {
+/**
+ * Estado vazio: uma frase em serifa, uma explicação curta e, quando fizer
+ * sentido, uma saída. Alinhado à esquerda, como um parágrafo — sem ícone
+ * centralizado, que só ocuparia espaço sem dizer nada.
+ */
+export function estadoVazio({ titulo, texto, botao }) {
   return `<div class="vazio">
-    <div class="vazio-icone">${icone}</div>
     <div class="vazio-titulo">${esc(titulo)}</div>
     ${texto ? `<p class="vazio-texto">${esc(texto)}</p>` : ''}
-    ${botao ? `<button class="botao botao-contorno" data-acao="${esc(botao.acao)}">${botao.icone || ''}${esc(botao.rotulo)}</button>` : ''}
+    ${botao ? `<button class="acao" data-acao="${esc(botao.acao)}">${esc(botao.rotulo)}</button>` : ''}
   </div>`;
 }

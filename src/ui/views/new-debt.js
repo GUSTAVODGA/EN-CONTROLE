@@ -9,10 +9,10 @@ import { esc, avisar, tremer } from '../dom.js';
 import { icones } from '../icons.js';
 import { abrirFolha, fecharFolha } from '../sheet.js';
 import { abrirFormularioCliente } from '../client-form.js';
+import { linhaExtrato } from '../pieces.js';
 import { formatarReais, formatarPercentual, lerValor } from '../../core/money.js';
 import { formatarData, hoje as dataDeHoje } from '../../core/dates.js';
 import { montarCronograma, LISTA_PERIODICIDADES, JUROS_SUGERIDOS, MAX_PARCELAS } from '../../core/schedule.js';
-import { iniciais } from '../../core/model.js';
 
 const PARCELAS_SUGERIDAS = [4, 6, 10, 12];
 
@@ -81,18 +81,17 @@ export function telaNovaDivida(ctx) {
     semAbas: true,
     html: `
       <div class="campo">
-        <span class="campo-rotulo">Cliente</span>
+        <span class="etiqueta">Cliente</span>
         <button class="seletor" data-acao="escolher-cliente">
           ${cliente
-            ? `<span class="avatar">${esc(iniciais(cliente.nome))}</span>
-               <span class="linha-corpo"><span class="linha-titulo">${esc(cliente.nome)}</span></span>`
-            : `<span class="linha-corpo"><span class="seletor-vazio">Escolher cliente</span></span>`}
-          <span class="linha-seta">${icones.direita}</span>
+            ? `<span class="seletor-nome">${esc(cliente.nome)}</span>`
+            : '<span class="seletor-vazio">Escolher cliente</span>'}
+          <span class="tom-fraco" style="display:flex">${icones.direita}</span>
         </button>
       </div>
 
       <div class="campo">
-        <label class="campo-rotulo" for="nd-valor">Valor base</label>
+        <label class="etiqueta" for="nd-valor">Valor base</label>
         <div class="entrada-dinheiro">
           <span>R$</span>
           <input id="nd-valor" inputmode="decimal" autocomplete="off" placeholder="0,00"
@@ -102,51 +101,49 @@ export function telaNovaDivida(ctx) {
       </div>
 
       <div class="campo">
-        <span class="campo-rotulo">Juros</span>
-        <div class="fichas">
-          ${JUROS_SUGERIDOS.map(p => `<button class="ficha" data-acao="juros" data-valor="${p}"
+        <span class="etiqueta">Juros</span>
+        <div class="opcoes">
+          ${JUROS_SUGERIDOS.map(p => `<button class="opcao" data-acao="juros" data-valor="${p}"
             aria-pressed="${!r.jurosLivre && r.jurosPercentual === p}">${p}%</button>`).join('')}
-          <button class="ficha" data-acao="juros-livre" aria-pressed="${r.jurosLivre}">Outro</button>
+          <button class="opcao" data-acao="juros-livre" aria-pressed="${r.jurosLivre}">outro</button>
         </div>
-        ${r.jurosLivre ? `<div style="margin-top:10px">
+        ${r.jurosLivre ? `<div style="margin-top:16px">
           <input class="entrada" id="nd-juros" inputmode="decimal" autocomplete="off"
                  placeholder="Percentual, ex.: 12,5" value="${esc(r.jurosTexto)}">
         </div>` : ''}
       </div>
 
       <div class="campo">
-        <span class="campo-rotulo">Periodicidade</span>
-        <div class="segmentado">
-          ${LISTA_PERIODICIDADES.map(p => `<button data-acao="periodicidade" data-valor="${esc(p.id)}"
+        <span class="etiqueta">Periodicidade</span>
+        <div class="opcoes">
+          ${LISTA_PERIODICIDADES.map(p => `<button class="opcao" data-acao="periodicidade" data-valor="${esc(p.id)}"
             aria-pressed="${r.periodicidade === p.id}">${esc(p.rotulo)}</button>`).join('')}
         </div>
         <p class="campo-dica">${esc(descricaoPeriodicidade(r.periodicidade))}</p>
       </div>
 
       <div class="campo">
-        <label class="campo-rotulo" for="nd-parcelas">Número de parcelas</label>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <div class="contador-passo">
-            <button data-acao="parcelas-menos" aria-label="Menos uma parcela">${icones.menos}</button>
-            <input id="nd-parcelas" type="number" inputmode="numeric" min="1" max="${MAX_PARCELAS}" value="${r.parcelas}">
-            <button data-acao="parcelas-mais" aria-label="Mais uma parcela">${icones.mais}</button>
-          </div>
-          <div class="fichas">
-            ${PARCELAS_SUGERIDAS.map(n => `<button class="ficha" data-acao="parcelas" data-valor="${n}"
-              aria-pressed="${r.parcelas === n}">${n}×</button>`).join('')}
-          </div>
+        <label class="etiqueta" for="nd-parcelas">Número de parcelas</label>
+        <div class="passo">
+          <button data-acao="parcelas-menos" aria-label="Menos uma parcela">${icones.menos}</button>
+          <input id="nd-parcelas" type="number" inputmode="numeric" min="1" max="${MAX_PARCELAS}" value="${r.parcelas}">
+          <button data-acao="parcelas-mais" aria-label="Mais uma parcela">${icones.mais}</button>
+        </div>
+        <div class="opcoes" style="margin-top:18px">
+          ${PARCELAS_SUGERIDAS.map(n => `<button class="opcao" data-acao="parcelas" data-valor="${n}"
+            aria-pressed="${r.parcelas === n}">${n}×</button>`).join('')}
         </div>
       </div>
 
       <div class="campo">
-        <label class="campo-rotulo" for="nd-data">Data da primeira parcela</label>
+        <label class="etiqueta" for="nd-data">Data da primeira parcela</label>
         <input class="entrada" id="nd-data" type="date" value="${esc(r.primeiroVencimento)}" max="2100-12-31">
       </div>
 
       <div class="secao" id="nd-previa">${previa()}</div>
 
       <div class="rodape-acao"><div class="rodape-acao-interno">
-        <button class="botao botao-primario botao-bloco botao-alto" data-acao="salvar-divida">Salvar dívida</button>
+        <button class="botao botao-primario botao-bloco" data-acao="salvar-divida">Salvar dívida</button>
       </div></div>
     `,
     aoMontar(raiz) {
@@ -186,11 +183,10 @@ function previa() {
   const resultado = calcular();
 
   if (resultado.pendente) {
-    return `<div class="previa"><p class="previa-erro tom-fraco" style="color:var(--tinta-3)">
-      ${esc(resultado.pendente)}</p></div>`;
+    return `<div class="previa"><p class="previa-aviso">${esc(resultado.pendente)}</p></div>`;
   }
   if (resultado.erro) {
-    return `<div class="previa"><p class="previa-erro">${esc(resultado.erro)}</p></div>`;
+    return `<div class="previa"><p class="previa-aviso previa-erro">${esc(resultado.erro)}</p></div>`;
   }
 
   const c = resultado.cronograma;
@@ -199,26 +195,19 @@ function previa() {
     : `${c.parcelas.length - 1} × ${formatarReais(c.valorParcelaCents)} + ${formatarReais(c.ultimaParcelaCents)}`;
 
   return `<div class="previa">
-    <div class="previa-topo">
-      <div>
-        <div class="rotulo-mini">Total a receber</div>
-        <div class="valor valor-grande" style="margin-top:2px">${esc(formatarReais(c.totalCents))}</div>
-      </div>
-      <div class="rotulo-mini">${esc(descricaoParcelas)}</div>
+    <div class="previa-total">
+      <span class="etiqueta">Total a receber</span>
+      <span class="cifra cifra-grande">${esc(formatarReais(c.totalCents))}</span>
     </div>
-    <dl class="previa-linhas" style="margin:0">
-      ${linhaPrevia('Valor', formatarReais(c.baseCents))}
-      ${linhaPrevia('Juros', `${formatarPercentual(c.jurosPercentual)} · ${formatarReais(c.jurosCents)}`)}
-      ${linhaPrevia('Total', formatarReais(c.totalCents))}
-      ${linhaPrevia('Parcelas', descricaoParcelas)}
-      ${linhaPrevia('Primeiro vencimento', formatarData(c.primeiroVencimento))}
-      ${linhaPrevia('Último vencimento', formatarData(c.ultimoVencimento))}
+    <dl class="extrato" style="margin-top:0">
+      ${linhaExtrato('Valor', formatarReais(c.baseCents))}
+      ${linhaExtrato('Juros', `${formatarPercentual(c.jurosPercentual)} · ${formatarReais(c.jurosCents)}`)}
+      ${linhaExtrato('Total', formatarReais(c.totalCents))}
+      ${linhaExtrato('Parcelas', descricaoParcelas)}
+      ${linhaExtrato('Primeiro vencimento', formatarData(c.primeiroVencimento))}
+      ${linhaExtrato('Último vencimento', formatarData(c.ultimoVencimento))}
     </dl>
   </div>`;
-}
-
-function linhaPrevia(rotulo, valor) {
-  return `<div class="previa-linha"><dt>${esc(rotulo)}</dt><dd>${esc(valor)}</dd></div>`;
 }
 
 // ── ações da tela, chamadas pelo roteador ────────────────────────────────
@@ -305,12 +294,12 @@ function abrirSeletorDeCliente(ctx) {
       <div class="folha-lista" id="sel-lista">
         ${clientes.length === 0
           ? '<p class="folha-texto" style="padding:8px 18px">Nenhum cliente cadastrado ainda.</p>'
-          : `<section class="cartao" style="border-radius:0;border-left:none;border-right:none;box-shadow:none">
+          : `<div class="itens">
               ${clientes.map(itemCliente).join('')}
-             </section>`}
+             </div>`}
       </div>
       <div class="folha-acoes">
-        <button class="botao botao-contorno botao-bloco" id="sel-novo">${icones.mais}Cadastrar novo cliente</button>
+        <button class="botao botao-bloco" id="sel-novo">Cadastrar novo cliente</button>
       </div>
     `,
     montar(folha) {
@@ -344,9 +333,7 @@ function abrirSeletorDeCliente(ctx) {
 }
 
 function itemCliente(cliente) {
-  return `<button class="linha com-avatar" data-escolher="${esc(cliente.id)}" data-nome="${esc(cliente.nome.toLowerCase())}">
-    <span class="avatar">${esc(iniciais(cliente.nome))}</span>
-    <span class="linha-corpo"><span class="linha-titulo">${esc(cliente.nome)}</span></span>
-    <span class="linha-seta">${icones.direita}</span>
+  return `<button class="item" data-escolher="${esc(cliente.id)}" data-nome="${esc(cliente.nome.toLowerCase())}">
+    <span class="item-corpo"><span class="item-nome">${esc(cliente.nome)}</span></span>
   </button>`;
 }

@@ -1,13 +1,13 @@
-// CLIENTES — lista com busca. Cada linha diz o essencial: quem é, como está e
-// quanto ainda deve.
+// CLIENTES — a lista, com busca. Cada linha diz três coisas: quem é, quanto
+// ainda deve e como está. Nada além disso.
 
 import { esc, estadoVazio } from '../dom.js';
 import { icones } from '../icons.js';
-import { seloCliente } from '../pieces.js';
+import { situacaoDoCliente } from '../pieces.js';
 import { formatarReais } from '../../core/money.js';
 import { formatarDataCurta } from '../../core/dates.js';
 import { estadoDoCliente } from '../../core/portfolio.js';
-import { iniciais, formatarTelefone } from '../../core/model.js';
+import { formatarTelefone } from '../../core/model.js';
 
 // A busca vive fora do estado do app de propósito: é preferência de momento,
 // não dado. Some ao sair da tela, como deve.
@@ -24,15 +24,14 @@ export function telaClientes(ctx) {
     titulo: 'Clientes',
     acaoTopo: { acao: 'novo-cliente', icone: icones.mais, rotulo: 'Novo cliente' },
     html: clientes.length === 0 ? semClientes() : `
-      <div class="busca" style="margin:4px 0 14px">
+      <div class="busca" style="margin:10px 0 8px">
         ${icones.busca}
         <input class="entrada" id="busca-clientes" type="search" placeholder="Buscar por nome ou telefone"
                value="${esc(termoDeBusca)}" autocomplete="off" enterkeyhint="search">
       </div>
-      ${filtrados.length === 0 ? semResultado(termoDeBusca) : `
-        <section class="cartao">${filtrados.map(linhaCliente).join('')}</section>
-        <p class="nota">${filtrados.length} de ${clientes.length} ${clientes.length === 1 ? 'cliente' : 'clientes'}</p>
-      `}
+      ${filtrados.length === 0
+        ? estadoVazio({ titulo: 'Nada encontrado.', texto: `Nenhum cliente corresponde a "${termoDeBusca.trim()}".` })
+        : `<div class="itens">${filtrados.map(linhaCliente).join('')}</div>`}
     `,
     aoMontar(raiz) {
       const campo = raiz.querySelector('#busca-clientes');
@@ -66,41 +65,30 @@ function filtrar(lista, termo) {
 
 function linhaCliente(estado) {
   const { cliente } = estado;
-  const emAtraso = estado.situacao === 'atrasado';
+  const situacao = situacaoDoCliente(estado);
 
-  const sub = estado.contagem.abertas > 0
-    ? `${estado.contagem.abertas} ${estado.contagem.abertas === 1 ? 'dívida' : 'dívidas'}` +
-      (estado.proximoVencimento ? ` · próx. ${formatarDataCurta(estado.proximoVencimento)}` : '')
+  const sub = estado.proximoVencimento
+    ? `próximo vencimento ${formatarDataCurta(estado.proximoVencimento)}`
     : cliente.telefone
       ? formatarTelefone(cliente.telefone)
-      : 'Sem dívidas abertas';
+      : '';
 
-  return `<button class="linha com-avatar" data-acao="abrir-cliente" data-cliente="${esc(cliente.id)}">
-    <span class="avatar ${emAtraso ? 'atraso' : ''}">${esc(iniciais(cliente.nome))}</span>
-    <span class="linha-corpo">
-      <span class="linha-titulo">${esc(cliente.nome)}</span>
-      <span class="linha-sub">${esc(sub)}</span>
+  return `<button class="item" data-acao="abrir-cliente" data-cliente="${esc(cliente.id)}">
+    <span class="item-corpo">
+      <span class="item-nome">${esc(cliente.nome)}</span>
+      ${sub ? `<span class="item-sub">${esc(sub)}</span>` : ''}
     </span>
-    <span class="linha-fim">
-      <span class="valor valor-medio ${emAtraso ? 'tom-negativo' : ''}">${esc(formatarReais(estado.aReceberCents))}</span>
-      ${seloCliente(estado.situacao)}
+    <span class="item-fim">
+      <span class="cifra cifra-media">${esc(formatarReais(estado.aReceberCents))}</span>
+      <span class="item-sub ${situacao.tom}">${esc(situacao.texto)}</span>
     </span>
   </button>`;
 }
 
 function semClientes() {
   return estadoVazio({
-    icone: icones.clientes,
-    titulo: 'Nenhum cliente ainda',
+    titulo: 'Nenhum cliente ainda.',
     texto: 'Os clientes são a base de tudo: cada dívida pertence a um deles.',
-    botao: { acao: 'novo-cliente', rotulo: 'Cadastrar cliente', icone: icones.mais },
-  });
-}
-
-function semResultado(termo) {
-  return estadoVazio({
-    icone: icones.busca,
-    titulo: 'Nada encontrado',
-    texto: `Nenhum cliente corresponde a "${termo.trim()}".`,
+    botao: { acao: 'novo-cliente', rotulo: 'Cadastrar cliente' },
   });
 }

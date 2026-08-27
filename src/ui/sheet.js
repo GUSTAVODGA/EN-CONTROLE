@@ -64,7 +64,7 @@ export function confirmar({ titulo, texto, rotuloConfirmar = 'Confirmar', perigo
     titulo,
     texto,
     conteudo: `<div class="folha-acoes">
-      <button class="botao ${perigo ? 'botao-perigo' : 'botao-primario'} botao-bloco botao-alto" data-acao="confirmar-folha">${esc(rotuloConfirmar)}</button>
+      <button class="botao ${perigo ? 'botao-perigo' : 'botao-primario'} botao-bloco" data-acao="confirmar-folha">${esc(rotuloConfirmar)}</button>
       <button class="botao botao-bloco" data-acao="fechar-folha">Cancelar</button>
     </div>`,
     montar(folhaEl) {

@@ -30,7 +30,7 @@ export function abrirPagamento(ctx, dividaId, numeroParcela) {
            `vencimento ${formatarData(parcela.vencimento)}`,
     conteudo: `
       <div class="campo">
-        <label class="campo-rotulo" for="pg-valor">Valor recebido</label>
+        <label class="etiqueta" for="pg-valor">Valor recebido</label>
         <div class="entrada-dinheiro">
           <span>R$</span>
           <input id="pg-valor" inputmode="decimal" autocomplete="off" value="${esc(formatarNumero(sugerido))}">
@@ -41,12 +41,12 @@ export function abrirPagamento(ctx, dividaId, numeroParcela) {
       </div>
 
       <div class="campo">
-        <label class="campo-rotulo" for="pg-data">Data do recebimento</label>
+        <label class="etiqueta" for="pg-data">Data do recebimento</label>
         <input class="entrada" id="pg-data" type="date" value="${esc(ctx.hoje)}" max="2100-12-31">
       </div>
 
       <div class="folha-acoes">
-        <button class="botao botao-primario botao-bloco botao-alto" id="pg-confirmar">Confirmar recebimento</button>
+        <button class="botao botao-primario botao-bloco" id="pg-confirmar">Confirmar recebimento</button>
         <button class="botao botao-bloco" id="pg-cancelar">Cancelar</button>
       </div>
     `,
