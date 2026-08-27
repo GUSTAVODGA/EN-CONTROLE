@@ -1,0 +1,32 @@
+name: CI
+
+# A regressão precisa rodar sem depender de ninguém lembrar de rodá-la. Dispara
+# em push e em pull request, para qualquer branch.
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+# Um push novo na mesma branch cancela a execução anterior: o que importa é o
+# estado atual do código, não a fila de estados intermediários.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Testes dos motores financeiros
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Os motores são módulos ES puros: sem browser, sem rede e sem uma única
+      # dependência a instalar. O gate roda em segundos.
+      - name: Rodar suíte
+        run: npm test
