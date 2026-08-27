@@ -21,9 +21,9 @@ export function telaCaixa(ctx) {
   return {
     titulo: 'Caixa',
     html: `
-      <div class="destaque">
+      <div class="bloco bloco-forte">
         <span class="etiqueta">Em caixa</span>
-        <span class="cifra cifra-heroi ${pano.emCaixaCents < 0 ? 'tom-atraso' : ''}">${esc(formatarReais(pano.emCaixaCents))}</span>
+        <div class="cifra cifra-heroi" style="margin-top:7px">${esc(formatarReais(pano.emCaixaCents))}</div>
       </div>
 
       <dl class="extrato">
@@ -35,12 +35,12 @@ export function telaCaixa(ctx) {
 
       <p class="nota">
         Aportes − retiradas − emprestado + recebido. O que está com os clientes
-        aparece em <b style="font-weight:600">Na rua</b>, no Início.
+        aparece em <b style="font-weight:800">Na rua</b>, no Início.
       </p>
 
-      <div class="acoes">
-        <button class="acao" data-acao="novo-aporte">Registrar aporte</button>
-        <button class="acao" data-acao="nova-retirada">Registrar retirada</button>
+      <div class="acoes acoes-duplas">
+        <button class="botao" data-acao="novo-aporte">Aporte</button>
+        <button class="botao" data-acao="nova-retirada">Retirada</button>
       </div>
 
       ${pano.emCaixaCents < 0 && pano.aportesCents === 0 ? `<p class="nota" style="margin-top:20px">
@@ -62,8 +62,8 @@ export function telaCaixa(ctx) {
 
       <div class="acoes" style="margin-top:44px">
         ${ctx.dados.exemplo
-          ? '<button class="acao acao-fraca" data-acao="limpar-exemplo">Limpar dados de exemplo</button>'
-          : '<button class="acao acao-fraca" data-acao="carregar-exemplo">Ver com dados de exemplo</button>'}
+          ? '<button class="botao botao-baixo" data-acao="limpar-exemplo">Limpar dados de exemplo</button>'
+          : '<button class="botao botao-baixo" data-acao="carregar-exemplo">Ver com dados de exemplo</button>'}
       </div>
     `,
   };
@@ -121,7 +121,7 @@ function linhaMovimento(m) {
   const positivo = m.valorCents > 0;
   const conteudo = `
     <span class="item-corpo">
-      <span class="item-nome" style="font-weight:450">${esc(m.titulo)}</span>
+      <span class="item-nome">${esc(m.titulo)}</span>
       <span class="item-sub">${esc(m.sub)}</span>
     </span>
     <span class="item-fim">

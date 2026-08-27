@@ -24,7 +24,7 @@ export function telaClientes(ctx) {
     titulo: 'Clientes',
     acaoTopo: { acao: 'novo-cliente', icone: icones.mais, rotulo: 'Novo cliente' },
     html: clientes.length === 0 ? semClientes() : `
-      <div class="busca" style="margin:10px 0 8px">
+      <div class="busca" style="margin:2px 0 18px">
         ${icones.busca}
         <input class="entrada" id="busca-clientes" type="search" placeholder="Buscar por nome ou telefone"
                value="${esc(termoDeBusca)}" autocomplete="off" enterkeyhint="search">

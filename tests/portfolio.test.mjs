@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { panorama, estadoDoCliente, TIPO_CAIXA } from '../src/core/portfolio.js';
+import { panorama, estadoDoCliente, agruparPorCliente, TIPO_CAIXA } from '../src/core/portfolio.js';
 
 const CLIENTE = { id: 'cli_1', nome: 'Cliente Teste', telefone: '', endereco: '', observacoes: '' };
 const OUTRO = { id: 'cli_2', nome: 'Outro Cliente', telefone: '', endereco: '', observacoes: '' };
@@ -154,4 +154,33 @@ test('operação vazia não quebra e devolve zeros', () => {
   assert.equal(p.aReceberCents, 0);
   assert.equal(p.atrasadoCents, 0);
   assert.deepEqual(p.agenda, { atrasadas: [], hoje: [], proximas: [] });
+});
+
+test('a agenda agrupada junta as parcelas do mesmo cliente numa linha só', () => {
+  const p = panorama(dados(), '2026-03-15');
+  assert.equal(p.agenda.atrasadas.length, 3, 'são três parcelas atrasadas');
+
+  const grupos = agruparPorCliente(p.agenda.atrasadas);
+  assert.equal(grupos.length, 1, 'de um cliente só, portanto uma linha só');
+  assert.equal(grupos[0].clienteNome, 'Cliente Teste');
+  assert.equal(grupos[0].quantidade, 3);
+  assert.equal(grupos[0].totalCents, 36000, 'soma o restante das três');
+  assert.equal(grupos[0].primeiroVencimento, '2026-01-10', 'a mais antiga do grupo');
+  assert.equal(grupos[0].diasDeAtrasoMax, 64);
+});
+
+test('agrupamento separa clientes e ordena pelo vencimento mais antigo', () => {
+  const segunda = { ...DIVIDA, id: 'div_2', clienteId: 'cli_2', primeiroVencimento: '2026-01-05' };
+  const p = panorama({
+    clientes: [CLIENTE, OUTRO], dividas: [DIVIDA, segunda], pagamentos: [], caixa: [],
+  }, '2026-03-15');
+
+  const grupos = agruparPorCliente(p.agenda.atrasadas);
+  assert.equal(grupos.length, 2);
+  assert.equal(grupos[0].clienteNome, 'Outro Cliente', 'vence antes, vem antes');
+  assert.equal(grupos[1].clienteNome, 'Cliente Teste');
+});
+
+test('agrupar uma agenda vazia devolve lista vazia', () => {
+  assert.deepEqual(agruparPorCliente([]), []);
 });

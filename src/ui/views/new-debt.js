@@ -105,9 +105,9 @@ export function telaNovaDivida(ctx) {
         <div class="opcoes">
           ${JUROS_SUGERIDOS.map(p => `<button class="opcao" data-acao="juros" data-valor="${p}"
             aria-pressed="${!r.jurosLivre && r.jurosPercentual === p}">${p}%</button>`).join('')}
-          <button class="opcao" data-acao="juros-livre" aria-pressed="${r.jurosLivre}">outro</button>
+          <button class="opcao" data-acao="juros-livre" aria-pressed="${r.jurosLivre}">Outro</button>
         </div>
-        ${r.jurosLivre ? `<div style="margin-top:16px">
+        ${r.jurosLivre ? `<div style="margin-top:10px">
           <input class="entrada" id="nd-juros" inputmode="decimal" autocomplete="off"
                  placeholder="Percentual, ex.: 12,5" value="${esc(r.jurosTexto)}">
         </div>` : ''}
@@ -129,7 +129,7 @@ export function telaNovaDivida(ctx) {
           <input id="nd-parcelas" type="number" inputmode="numeric" min="1" max="${MAX_PARCELAS}" value="${r.parcelas}">
           <button data-acao="parcelas-mais" aria-label="Mais uma parcela">${icones.mais}</button>
         </div>
-        <div class="opcoes" style="margin-top:18px">
+        <div class="opcoes" style="margin-top:10px">
           ${PARCELAS_SUGERIDAS.map(n => `<button class="opcao" data-acao="parcelas" data-valor="${n}"
             aria-pressed="${r.parcelas === n}">${n}×</button>`).join('')}
         </div>

@@ -42,32 +42,26 @@ versionado é exatamente o que é servido.
 
 ## Direção visual
 
-A referência não é aplicativo, é página impressa: um extrato bem composto, um
-caderno de anotação caro. A interface inteira é feita de três coisas —
-**espaço em branco, fio de cabelo e tipografia**.
+A referência é **painel de controle impresso**, não aplicativo: fundo branco,
+blocos fechados por traço preto, número grande e pesado, rótulo em caixa alta.
 
-O que o sistema **não** usa, e a regra vale para o que vier depois:
+Três decisões definem o resto:
 
-| Não existe | Em vez disso |
-|---|---|
-| cartão branco sobre fundo cinza | o conteúdo mora direto no papel |
-| sombra (nenhuma, em lugar nenhum) | um fio de 1px quando é preciso separar |
-| pílula, chip, selo colorido | a palavra, escrita por extenso |
-| avatar com iniciais | o nome do cliente |
-| ícone decorativo | nada, ou a palavra |
-| barra de abas com ícones | três palavras no rodapé |
+1. **Borda, não sombra.** Cada bloco é fechado por um traço de 1,5px na cor da
+   tinta. Não existe uma única `box-shadow` no produto.
+2. **Peso.** Números em 800, nomes em 700, rótulos em 700 e caixa alta. A
+   hierarquia se lê de longe, com o celular na mão e sol na tela.
+3. **Inversão.** O número mais importante da tela vive num bloco preto sólido
+   com texto branco — um por tela, no máximo. É o que ancora a página.
 
-Sobraram seis ícones no produto inteiro, todos de navegação ou controle:
-voltar, avançar, buscar, somar, subtrair, editar.
+Tipografia: **Archivo**, grotesca de traço industrial, hospedada em `fontes/`
+e com algarismos de largura fixa. Cor é informação, não decoração: a paleta é
+tinta, papel e dois tons — atraso e recebido.
 
-**Tipografia.** Toda quantia é composta em Newsreader (serifada, hospedada em
-`fontes/`, com algarismos de largura fixa) e todo rótulo em fonte de sistema.
-É esse contraste que carrega a hierarquia — não caixa, não cor, não peso de
-borda.
-
-**Cor é informação, não decoração.** A paleta tem tinta, papel e dois tons:
-o do atraso e o do recebido. O atraso aparece porque é para doer um pouco.
-Fora isso, é tinta sobre papel, e o tema escuro é a mesma ideia invertida.
+**A lista principal do Início é de clientes, não de parcelas.** Cobrança se faz
+por pessoa: um cliente com quatro parcelas vencidas é uma ligação, não quatro
+linhas. `agruparPorCliente()` soma o que cada um deve agora, e "atrasado" e
+"vence hoje" moram na mesma seção porque são a mesma tarefa.
 
 Uma consequência prática está no fim do `style.css`: as classes de tom
 (`.tom-atraso` e companhia) ficam no final do arquivo de propósito, porque

@@ -1,13 +1,17 @@
-// INÍCIO — "como está a operação hoje?", respondido numa olhada.
+// INÍCIO — o painel de cobrança do dia.
 //
-// A tela é curta de propósito. Um valor grande, três linhas de extrato e, no
-// máximo, três parcelas por seção. Tudo o que não cabe nesse resumo tem uma
-// tela própria a um toque de distância — não precisa estar aqui.
+// A tela responde a uma pergunta só: QUEM eu preciso cobrar agora? Por isso a
+// lista principal é de CLIENTES, não de parcelas. Um cliente com quatro
+// parcelas vencidas é uma ligação, não quatro — e mostrá-lo quatro vezes só
+// enche a tela sem acrescentar informação.
+//
+// A ordem é: quanto tenho, quanto está na rua, quem devo cobrar, o que vem
+// depois. Nada mais cabe aqui.
 
-import { esc, cabecalhoSecao, estadoVazio } from '../dom.js';
-import { resumoFinanceiro, listaAgenda } from '../pieces.js';
+import { cabecalhoSecao, estadoVazio } from '../dom.js';
+import { blocoCaixa, trincaDeNumeros, blocoCobranca, linhaAgenda } from '../pieces.js';
+import { agruparPorCliente } from '../../core/portfolio.js';
 import { formatarReais } from '../../core/money.js';
-import { formatarDataExtenso, diaDaSemana } from '../../core/dates.js';
 
 export function telaInicio(ctx) {
   return {
@@ -18,41 +22,40 @@ export function telaInicio(ctx) {
 
 function conteudo(ctx) {
   const pano = ctx.pano;
-  const { atrasadas, hoje: vencendoHoje, proximas } = pano.agenda;
-  const nada = atrasadas.length === 0 && vencendoHoje.length === 0 && proximas.length === 0;
+
+  // Atrasado e vencendo hoje são a mesma tarefa — cobrar agora — e por isso
+  // moram na mesma lista, em vez de em duas seções que competem pela atenção.
+  const paraCobrar = agruparPorCliente([...pano.agenda.atrasadas, ...pano.agenda.hoje]);
+  const totalACobrar = pano.atrasadoCents + pano.venceHojeCents;
+  const proximas = pano.agenda.proximas;
 
   return `
     ${ctx.dados.exemplo ? avisoExemplo() : ''}
 
-    <p class="rotulo" style="margin:0">
-      ${esc(capitalizar(diaDaSemana(ctx.hoje)))}, ${esc(formatarDataExtenso(ctx.hoje))}
-    </p>
+    ${blocoCaixa(pano)}
+    ${trincaDeNumeros(pano)}
 
-    ${resumoFinanceiro(pano)}
-
-    ${vencendoHoje.length > 0 ? `<section class="secao">
-      ${cabecalhoSecao('Vence hoje', formatarReais(pano.venceHojeCents))}
-      ${listaAgenda(vencendoHoje, ctx.hoje)}
-    </section>` : ''}
-
-    ${atrasadas.length > 0 ? `<section class="secao">
-      ${cabecalhoSecao('Em atraso', formatarReais(pano.atrasadoCents))}
-      ${listaAgenda(atrasadas, ctx.hoje)}
-    </section>` : ''}
+    ${paraCobrar.length > 0 ? `<section class="secao">
+      ${cabecalhoSecao('Cobrar agora', formatarReais(totalACobrar))}
+      ${paraCobrar.slice(0, 4).map(g => blocoCobranca(g, ctx.hoje)).join('')}
+      ${paraCobrar.length > 4 ? `<span class="mais">e mais ${paraCobrar.length - 4} clientes</span>` : ''}
+    </section>` : `<section class="secao">
+      ${cabecalhoSecao('Cobrar agora')}
+      ${estadoVazio({
+        titulo: 'Nada a cobrar hoje.',
+        texto: 'Nenhuma parcela venceu ou vence hoje. O que vem a seguir está logo abaixo.',
+      })}
+    </section>`}
 
     ${proximas.length > 0 ? `<section class="secao">
-      ${cabecalhoSecao('A vencer')}
-      ${listaAgenda(proximas, ctx.hoje)}
+      ${cabecalhoSecao('A vencer', `${proximas.length}`)}
+      <div class="itens">${proximas.slice(0, 4).map(i => linhaAgenda(i, ctx.hoje)).join('')}</div>
+      ${proximas.length > 4 ? `<span class="mais">e mais ${proximas.length - 4} parcelas</span>` : ''}
     </section>` : ''}
 
-    ${nada ? `<section class="secao">${estadoVazio({
-      titulo: 'Nenhuma parcela em aberto.',
-      texto: 'Tudo o que foi cadastrado está quitado.',
-    })}</section>` : ''}
-
-    <div class="acoes">
-      <button class="acao" data-acao="nova-divida">Nova dívida</button>
-      <button class="acao acao-fraca" data-acao="novo-cliente">Novo cliente</button>
+    <div class="acoes acoes-duplas" style="margin-top:28px">
+      <button class="botao botao-primario" data-acao="nova-divida">Nova dívida</button>
+      <button class="botao" data-acao="novo-cliente">Novo cliente</button>
     </div>
   `;
 }
@@ -64,7 +67,7 @@ function primeiraVez() {
       texto: 'Depois é só registrar a dívida: valor, juros, periodicidade e a data da primeira parcela. O restante o sistema calcula.',
       botao: { acao: 'novo-cliente', rotulo: 'Cadastrar cliente' },
     })}
-    <p class="nota" style="max-width:34ch;margin-top:34px">
+    <p class="nota" style="max-width:36ch">
       Já tem dinheiro na rua? Registre um aporte em Caixa para o saldo refletir
       o capital da operação.
     </p>
@@ -72,12 +75,8 @@ function primeiraVez() {
 }
 
 function avisoExemplo() {
-  return `<p class="nota" style="margin:0 0 2px">
-    Dados de exemplo.
-    <button class="acao acao-fraca" style="border-bottom:1px solid var(--linha)" data-acao="limpar-exemplo">Limpar</button>
+  return `<p class="nota" style="margin:0 0 14px;display:flex;align-items:center;gap:10px">
+    <span class="etiqueta" style="color:var(--tinta-2)">Dados de exemplo</span>
+    <button class="botao botao-baixo" style="height:30px;padding:0 12px" data-acao="limpar-exemplo">Limpar</button>
   </p>`;
-}
-
-function capitalizar(texto) {
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
 }

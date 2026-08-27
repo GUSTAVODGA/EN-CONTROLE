@@ -1,6 +1,8 @@
-// Peças visuais compartilhadas. Todas obedecem à mesma regra de composição:
-// o texto explica à esquerda, a quantia responde à direita, e um fio separa
-// uma linha da outra. Sem caixa, sem cor de fundo, sem ícone decorativo.
+// Peças visuais compartilhadas.
+//
+// Duas regras de composição valem para todas: o número fica à direita e é a
+// coisa mais pesada da linha; o que explica o número fica à esquerda, menor.
+// Blocos são fechados por traço, nunca por sombra.
 
 import { esc, classes } from './dom.js';
 import { formatarReais, formatarPercentual } from '../core/money.js';
@@ -8,29 +10,63 @@ import { formatarDataCurta, distanciaEmPalavras } from '../core/dates.js';
 import { SITUACAO } from '../core/debt.js';
 import { rotuloPeriodicidade } from '../core/schedule.js';
 
-/**
- * Os números da operação: um valor grande, uma régua fina de proporção e três
- * linhas de extrato. Os quatro conceitos continuam todos na tela — o que mudou
- * é que só um deles pede a atenção.
- */
-export function resumoFinanceiro(pano) {
-  const proporcaoAtraso = pano.aReceberCents > 0
-    ? Math.min(100, (pano.atrasadoCents / pano.aReceberCents) * 100)
-    : 0;
+/** O bloco âncora do Início: preto sólido, número invertido. */
+export function blocoCaixa(pano) {
+  return `<div class="bloco bloco-forte">
+    <span class="etiqueta">Em caixa</span>
+    <div class="cifra cifra-heroi" style="margin-top:7px">${esc(formatarReais(pano.emCaixaCents))}</div>
+  </div>`;
+}
 
-  return `
-    <div class="destaque">
-      <span class="etiqueta">Em caixa</span>
-      <span class="cifra cifra-heroi ${pano.emCaixaCents < 0 ? 'tom-atraso' : ''}">${esc(formatarReais(pano.emCaixaCents))}</span>
-      ${pano.aReceberCents > 0 ? `<div class="regua">
-        <span class="vencido" style="width:${proporcaoAtraso.toFixed(2)}%"></span>
-      </div>` : ''}
-    </div>
-    <dl class="extrato">
-      ${linhaExtrato('Na rua', formatarReais(pano.naRuaCents))}
-      ${linhaExtrato('A receber', formatarReais(pano.aReceberCents))}
-      ${linhaExtrato('Atrasado', formatarReais(pano.atrasadoCents), pano.atrasadoCents > 0 ? 'tom-atraso' : 'tom-fraco')}
-    </dl>`;
+/** Na rua, a receber e atrasado dividindo uma régua de três colunas. */
+export function trincaDeNumeros(pano) {
+  return `<div class="trinca">
+    ${itemTrinca('Na rua', pano.naRuaCents)}
+    ${itemTrinca('A receber', pano.aReceberCents)}
+    ${itemTrinca('Atrasado', pano.atrasadoCents, pano.atrasadoCents > 0 ? 'tom-atraso' : '')}
+  </div>`;
+}
+
+function itemTrinca(rotulo, cents, tom = '') {
+  return `<div class="trinca-item">
+    <span class="etiqueta">${esc(rotulo)}</span>
+    <span class="cifra ${tom}">${esc(formatarReais(cents))}</span>
+  </div>`;
+}
+
+/**
+ * Um cliente a cobrar. É a peça central do Início: uma linha por PESSOA, com
+ * tudo o que ela deve agora somado, porque é assim que a cobrança acontece.
+ */
+export function blocoCobranca(grupo, hojeIso) {
+  const atrasado = grupo.diasDeAtrasoMax > 0;
+  const parcelas = `${grupo.quantidade} ${grupo.quantidade === 1 ? 'parcela' : 'parcelas'}`;
+  const quando = atrasado
+    ? `${grupo.diasDeAtrasoMax} ${grupo.diasDeAtrasoMax === 1 ? 'dia' : 'dias'} de atraso`
+    : 'vence hoje';
+
+  return `<button class="cobranca ${atrasado ? 'urgente' : ''}"
+      data-acao="abrir-cliente" data-cliente="${esc(grupo.clienteId)}">
+    <span class="cobranca-topo">
+      <span class="cobranca-nome">${esc(grupo.clienteNome)}</span>
+      <span class="cifra cifra-media ${atrasado ? 'tom-atraso' : ''}">${esc(formatarReais(grupo.totalCents))}</span>
+    </span>
+    <span class="cobranca-sub">${esc(parcelas)} · ${esc(quando)}</span>
+  </button>`;
+}
+
+/** Uma parcela futura, na lista do "a vencer". */
+export function linhaAgenda(item, hojeIso) {
+  return `<button class="item" data-acao="pagar" data-divida="${esc(item.dividaId)}" data-parcela="${item.numero}">
+    <span class="item-corpo">
+      <span class="item-nome">${esc(item.clienteNome)}</span>
+      <span class="item-sub">parcela ${item.numero} de ${item.totalParcelas}${item.parcial ? ' · parcial' : ''}</span>
+    </span>
+    <span class="item-fim">
+      <span class="cifra cifra-media">${esc(formatarReais(item.restanteCents))}</span>
+      <span class="item-sub">${esc(formatarDataCurta(item.vencimento))} · ${esc(distanciaEmPalavras(item.vencimento, hojeIso))}</span>
+    </span>
+  </button>`;
 }
 
 /** Uma linha de extrato: rótulo à esquerda, quantia à direita. */
@@ -41,52 +77,23 @@ export function linhaExtrato(rotulo, valor, tom = '') {
   </div>`;
 }
 
-/** Trio de valores para a ficha do cliente. */
+/** Trinca de valores para a ficha do cliente. */
 export function trioDeValores(itens) {
-  return `<dl class="extrato">${
-    itens.map(i => linhaExtrato(i.rotulo, formatarReais(i.cents), i.tom || '')).join('')
-  }</dl>`;
+  return `<div class="trinca">${
+    itens.map(i => itemTrinca(i.rotulo, i.cents, i.tom || '')).join('')
+  }</div>`;
 }
 
-/** Uma parcela na agenda do Início. O toque abre o registro de pagamento. */
-export function linhaAgenda(item, hojeIso) {
-  const atrasada = item.situacao === SITUACAO.ATRASADA;
-  const quando = atrasada
-    ? `${item.diasDeAtraso} ${item.diasDeAtraso === 1 ? 'dia' : 'dias'} de atraso`
-    : distanciaEmPalavras(item.vencimento, hojeIso);
-
-  return `<button class="item" data-acao="pagar" data-divida="${esc(item.dividaId)}" data-parcela="${item.numero}">
-    <span class="item-corpo">
-      <span class="item-nome">${esc(item.clienteNome)}</span>
-      <span class="item-sub">parcela ${item.numero} de ${item.totalParcelas} · ${esc(formatarDataCurta(item.vencimento))}${item.parcial ? ' · parcial' : ''}</span>
-    </span>
-    <span class="item-fim">
-      <span class="cifra cifra-media">${esc(formatarReais(item.restanteCents))}</span>
-      <span class="item-sub ${atrasada ? 'tom-atraso' : ''}">${esc(quando)}</span>
-    </span>
-  </button>`;
-}
-
-/** Lista de agenda com corte e uma linha discreta para o que ficou de fora. */
-export function listaAgenda(itens, hojeIso, limite = 3) {
-  const visiveis = itens.slice(0, limite);
-  const restantes = itens.length - visiveis.length;
-  return `<div class="itens">
-    ${visiveis.map(i => linhaAgenda(i, hojeIso)).join('')}
-    ${restantes > 0 ? `<span class="mais">e mais ${restantes} ${restantes === 1 ? 'parcela' : 'parcelas'}</span>` : ''}
-  </div>`;
-}
-
-/** Situação do cliente em palavra, não em selo colorido. */
+/** Situação do cliente em palavra. */
 export function situacaoDoCliente(estado) {
   if (estado.situacao === 'atrasado') {
     const n = estado.contagem.parcelasAtrasadas;
-    return { texto: `${n} ${n === 1 ? 'parcela atrasada' : 'parcelas atrasadas'}`, tom: 'tom-atraso' };
+    return { texto: `${n} ${n === 1 ? 'atrasada' : 'atrasadas'}`, tom: 'tom-atraso' };
   }
   if (estado.situacao === 'quitado') return { texto: 'quitado', tom: 'tom-fraco' };
   if (estado.situacao === 'sem-dividas') return { texto: 'sem dívidas', tom: 'tom-fraco' };
   const n = estado.contagem.abertas;
-  return { texto: `${n} ${n === 1 ? 'dívida aberta' : 'dívidas abertas'}`, tom: 'tom-fraco' };
+  return { texto: `${n} ${n === 1 ? 'dívida' : 'dívidas'}`, tom: 'tom-fraco' };
 }
 
 /** Situação de uma dívida, também em palavra. */
@@ -99,18 +106,10 @@ export function situacaoDaDivida(estado) {
   return { texto: 'em dia', tom: 'tom-fraco' };
 }
 
-/** Régua de progresso: quanto da dívida já foi recebido. */
-export function progressoDivida(estado) {
-  const feito = estado.totalCents > 0 ? (estado.aplicadoCents / estado.totalCents) * 100 : 0;
-  return `<div class="regua" style="background:var(--linha-fina)">
-    <span style="width:${Math.max(0, Math.min(100, feito)).toFixed(2)}%;background:var(--tinta-3)"></span>
-  </div>`;
-}
-
 /** Os termos combinados, em uma linha. */
 export function termosDaDivida(estado) {
   return `${formatarReais(estado.baseCents)} + ${formatarPercentual(estado.jurosPercentual)} · ` +
-    `${rotuloPeriodicidade(estado.periodicidade).toLowerCase()} · ${estado.contagem.total} parcelas`;
+    `${rotuloPeriodicidade(estado.periodicidade).toLowerCase()} · ${estado.contagem.total}×`;
 }
 
 /** Uma parcela na ficha da dívida. */
@@ -134,7 +133,7 @@ export function linhaParcela(parcela, dividaId, hojeIso) {
   return `<${etiqueta} class="parcela ${classes(paga && 'paga', atrasada && 'atrasada')}"${gatilho}>
     <span class="parcela-numero">${parcela.numero}</span>
     <span class="parcela-info">
-      <span>${esc(formatarDataCurta(parcela.vencimento))}</span>
+      ${esc(formatarDataCurta(parcela.vencimento))}
       <span class="parcela-sub ${atrasada ? 'tom-atraso' : ''}">${esc(sub)}${
         parcela.parcial ? ` · falta ${esc(formatarReais(parcela.restanteCents))}` : ''}</span>
     </span>

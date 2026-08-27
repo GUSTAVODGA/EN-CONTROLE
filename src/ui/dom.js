@@ -50,6 +50,6 @@ export function estadoVazio({ titulo, texto, botao }) {
   return `<div class="vazio">
     <div class="vazio-titulo">${esc(titulo)}</div>
     ${texto ? `<p class="vazio-texto">${esc(texto)}</p>` : ''}
-    ${botao ? `<button class="acao" data-acao="${esc(botao.acao)}">${esc(botao.rotulo)}</button>` : ''}
+    ${botao ? `<button class="botao botao-baixo" data-acao="${esc(botao.acao)}">${esc(botao.rotulo)}</button>` : ''}
   </div>`;
 }

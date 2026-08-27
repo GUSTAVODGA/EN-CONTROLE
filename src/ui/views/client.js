@@ -1,14 +1,13 @@
 // FICHA DO CLIENTE — os dados dele, as dívidas e o histórico de pagamentos.
 //
-// Um cliente pode ter várias dívidas ao mesmo tempo, e cada uma aparece
-// inteira. Para que "inteira" não vire "amontoada", cada dívida mostra por
-// padrão só o essencial — saldo, termos e situação — e abre o resto sob toque.
+// Um cliente pode ter várias dívidas ao mesmo tempo, e cada uma é um bloco
+// fechado por traço. Para que "várias" não vire "amontoado", cada bloco mostra
+// por padrão só saldo, termos e situação; o resto abre sob toque.
 
 import { esc, cabecalhoSecao, estadoVazio } from '../dom.js';
 import { icones } from '../icons.js';
 import {
-  trioDeValores, situacaoDaDivida, progressoDivida, termosDaDivida,
-  fatosDaDivida, linhaParcela,
+  trioDeValores, situacaoDaDivida, termosDaDivida, fatosDaDivida, linhaParcela,
 } from '../pieces.js';
 import { formatarReais } from '../../core/money.js';
 import { formatarData, formatarDataCurta, comparar } from '../../core/dates.js';
@@ -47,7 +46,7 @@ export function telaCliente(ctx) {
       ${estado.contagem.dividas > 0 ? trioDeValores([
         { rotulo: 'A receber', cents: estado.aReceberCents },
         { rotulo: 'Na rua', cents: estado.naRuaCents },
-        { rotulo: 'Atrasado', cents: estado.atrasadoCents, tom: estado.atrasadoCents > 0 ? 'tom-atraso' : 'tom-fraco' },
+        { rotulo: 'Atrasado', cents: estado.atrasadoCents, tom: estado.atrasadoCents > 0 ? 'tom-atraso' : '' },
       ]) : ''}
 
       <section class="secao">
@@ -62,7 +61,7 @@ export function telaCliente(ctx) {
       </section>
 
       ${dividas.length > 0 ? `<div class="acoes">
-        <button class="acao" data-acao="nova-divida">Nova dívida</button>
+        <button class="botao" data-acao="nova-divida">Nova dívida</button>
       </div>` : ''}
 
       ${pagamentos.length > 0 ? `<section class="secao">
@@ -70,8 +69,8 @@ export function telaCliente(ctx) {
         <div class="itens">${pagamentos.map(linhaPagamento).join('')}</div>
       </section>` : ''}
 
-      <div class="acoes" style="margin-top:44px">
-        <button class="acao acao-perigo" data-acao="excluir-cliente">Excluir cliente</button>
+      <div class="acoes" style="margin-top:36px">
+        <button class="botao botao-perigo botao-baixo" data-acao="excluir-cliente">Excluir cliente</button>
       </div>
     `,
   };
@@ -92,15 +91,14 @@ function contato(cliente) {
   ].filter(Boolean);
 
   if (partes.length === 0) {
-    return `<p class="nota" style="margin-top:18px">
-      Sem telefone, endereço ou observações.
-      <button class="acao acao-fraca" style="border-bottom:1px solid var(--linha)" data-acao="editar-cliente">Adicionar</button>
-    </p>`;
+    return `<div class="acoes" style="margin-top:0">
+      <button class="botao botao-baixo" data-acao="editar-cliente">Adicionar telefone e endereço</button>
+    </div>`;
   }
 
-  return `<div style="margin-top:18px">${partes.map(p => `
-    <p class="rotulo" style="margin:0 0 4px;color:var(--tinta-2);line-height:1.55">${
-      p.link ? `<a href="${esc(p.link)}" style="color:inherit;text-decoration:none">${esc(p.texto)}</a>` : esc(p.texto)
+  return `<div class="bloco" style="padding:13px 15px">${partes.map((p, i) => `
+    <p class="legenda" style="margin:${i === 0 ? '0' : '6px 0 0'}">${
+      p.link ? `<a href="${esc(p.link)}" style="color:inherit;font-weight:700;text-decoration:none">${esc(p.texto)}</a>` : esc(p.texto)
     }</p>`).join('')}</div>`;
 }
 
@@ -108,37 +106,35 @@ function blocoDivida(estado, ctx) {
   const aberta = dividasAbertas.has(estado.dividaId);
   const situacao = situacaoDaDivida(estado);
 
-  return `<section style="padding:22px 0 4px;border-top:1px solid var(--linha-fina)">
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px">
-      <span class="cifra cifra-grande">${esc(formatarReais(estado.saldoCents))}</span>
-      <span class="item-sub ${situacao.tom}" style="margin:0">${esc(situacao.texto)}</span>
+  return `<div class="bloco" style="margin-bottom:8px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+      <span class="etiqueta">${estado.quitada ? 'Quitada' : 'Saldo restante'}</span>
+      <span class="etiqueta ${situacao.tom}">${esc(situacao.texto)}</span>
     </div>
-    <p class="rotulo" style="margin:5px 0 0">
-      ${estado.quitada ? 'dívida quitada' : 'saldo restante'} · ${esc(termosDaDivida(estado))}
-    </p>
-    <div style="margin-top:16px">${progressoDivida(estado)}</div>
+    <div class="cifra cifra-grande" style="margin-top:6px">${esc(formatarReais(estado.saldoCents))}</div>
+    <p class="legenda" style="margin:5px 0 0">${esc(termosDaDivida(estado))}</p>
 
-    <div class="acoes" style="margin-top:18px">
-      ${!estado.quitada ? `<button class="acao" data-acao="pagar"
+    <div class="acoes ${estado.quitada ? '' : 'acoes-duplas'}" style="margin-top:14px">
+      ${!estado.quitada ? `<button class="botao botao-primario botao-baixo" data-acao="pagar"
         data-divida="${esc(estado.dividaId)}" data-parcela="${estado.proximaParcela.numero}">
-        Registrar pagamento</button>` : ''}
-      <button class="acao acao-fraca" data-acao="alternar-divida" data-divida="${esc(estado.dividaId)}">
-        ${aberta ? 'Menos detalhes' : 'Ver detalhes'}
+        Receber</button>` : ''}
+      <button class="botao botao-baixo" data-acao="alternar-divida" data-divida="${esc(estado.dividaId)}">
+        ${aberta ? 'Fechar' : 'Detalhes'}
       </button>
     </div>
 
     ${aberta ? `
       ${fatosDaDivida(estado)}
-      <div class="secao" style="margin-top:26px">
+      <div class="secao" style="margin-top:22px">
         ${cabecalhoSecao('Parcelas')}
-        <div>${estado.parcelas.map(p => linhaParcela(p, estado.dividaId, ctx.hoje)).join('')}</div>
+        <div class="itens">${estado.parcelas.map(p => linhaParcela(p, estado.dividaId, ctx.hoje)).join('')}</div>
       </div>
-      <div class="acoes">
-        <button class="acao acao-perigo" data-acao="excluir-divida" data-divida="${esc(estado.dividaId)}">
+      <div class="acoes" style="margin-top:16px">
+        <button class="botao botao-perigo botao-baixo" data-acao="excluir-divida" data-divida="${esc(estado.dividaId)}">
           Excluir dívida</button>
       </div>
     ` : ''}
-  </section>`;
+  </div>`;
 }
 
 function historicoDoCliente(ctx, dividas) {
@@ -158,7 +154,7 @@ function linhaPagamento(pagamento) {
 
   return `<button class="item" data-acao="ver-pagamento" data-pagamento="${esc(pagamento.id)}">
     <span class="item-corpo">
-      <span class="item-nome" style="font-weight:450">${esc(formatarData(pagamento.data))}</span>
+      <span class="item-nome">${esc(formatarData(pagamento.data))}</span>
       <span class="item-sub">${esc(descricao)} · dívida de ${esc(formatarReais(pagamento.divida.baseCents))}</span>
     </span>
     <span class="item-fim">

@@ -1,67 +1,79 @@
 /* ══════════════════════════════════════════════════════════════════════════
    EN CONTROLE — sistema visual
 
-   A referência aqui não é aplicativo, é PÁGINA IMPRESSA. Um extrato bem
-   composto, um caderno de anotação caro. Por isso a estrutura inteira é feita
-   de três coisas apenas: espaço em branco, fio de cabelo e tipografia.
+   PAINEL, não aplicativo. A referência é um quadro de controle impresso:
+   fundo branco, blocos delimitados por traço preto de verdade, número grande
+   e pesado, rótulo em caixa alta. Nada flutua, nada é macio, nada é sutil.
 
-   O que este sistema NÃO usa, deliberadamente:
-     · cartão branco sobre fundo cinza — o conteúdo mora no papel;
-     · sombra — nenhuma, em lugar nenhum;
-     · cantos muito arredondados, pílulas, chips, selos coloridos;
-     · avatar, bolinha com iniciais, ícone decorativo;
-     · barra de abas com ícones.
+   As três decisões que definem o resto:
 
-   Hierarquia é peso e tamanho, não caixa. Cor é informação, não decoração:
-   o único tom que aparece é o do atraso, e ele aparece porque é para doer um
-   pouco. O resto é tinta sobre papel.
+   1. BORDA, não sombra. Cada bloco é fechado por um traço de 1,5px na cor da
+      tinta. É o que dá definição sem precisar de profundidade falsa.
+   2. PESO. Os números são 800, os nomes 700, os rótulos 700 em caixa alta.
+      A hierarquia se lê de longe, com a tela no bolso e o sol batendo.
+   3. INVERSÃO. O número mais importante da tela vive num bloco preto sólido
+      com texto branco. Um por tela, no máximo — é o que ancora a página.
+
+   Fundo branco com traço preto é o oposto exato de cartão claro com sombra
+   suave sobre fundo cinza, que é o que este produto NÃO deve parecer.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Newsreader, hospedada aqui mesmo: o app abre offline e a tipografia é a
-   mesma em qualquer aparelho. Variável de 300 a 600 num arquivo só. */
+/* Archivo: grotesca de traço industrial, com pesos altos que aguentam número
+   grande sem borrar. Hospedada aqui — o app abre offline e fica idêntica em
+   qualquer aparelho. */
 @font-face {
-  font-family: 'Newsreader';
+  font-family: 'Archivo';
   font-style: normal;
-  font-weight: 300 600;
+  font-weight: 400 800;
   font-display: swap;
-  src: url('./fontes/newsreader.woff2') format('woff2');
+  src: url('./fontes/archivo.woff2') format('woff2');
 }
 
 :root {
-  --papel: #faf8f4;
+  --papel: #ffffff;
+  --papel-2: #f4f2ed;
 
-  --tinta: #1a1815;
-  --tinta-2: #67625a;
-  --tinta-3: #9c968b;
+  --tinta: #0e0e0e;
+  --tinta-2: #55524c;
+  --tinta-3: #8b877f;
 
-  --linha: rgba(26, 24, 21, 0.13);
-  --linha-fina: rgba(26, 24, 21, 0.075);
+  --borda: #0e0e0e;
+  --borda-suave: #ddd9d1;
 
-  --atraso: #a2452a;
-  --recebido: #3d6a4d;
+  --atraso: #bf3a1d;
+  --atraso-fundo: #fdeee9;
+  --recebido: #1c6742;
 
-  --serif: 'Newsreader', ui-serif, Georgia, 'Times New Roman', serif;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-          Arial, 'Noto Sans', sans-serif;
+  --invertido-fundo: #0e0e0e;
+  --invertido-tinta: #ffffff;
+
+  --fonte: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --largura: 520px;
-  --margem: 22px;
-  --abas-altura: 54px;
+  --margem: 18px;
+  --abas-altura: 58px;
+  --traco: 1.5px;
+  --raio: 4px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --papel: #121110;
+    --papel: #0d0d0d;
+    --papel-2: #171716;
 
-    --tinta: #efebe4;
-    --tinta-2: #9c958a;
-    --tinta-3: #6c665e;
+    --tinta: #f6f4f0;
+    --tinta-2: #a29d95;
+    --tinta-3: #726d66;
 
-    --linha: rgba(239, 235, 228, 0.16);
-    --linha-fina: rgba(239, 235, 228, 0.085);
+    --borda: #f6f4f0;
+    --borda-suave: #302e2b;
 
-    --atraso: #d78c6b;
-    --recebido: #7cb693;
+    --atraso: #ef7a55;
+    --atraso-fundo: #2a1712;
+    --recebido: #59b585;
+
+    --invertido-fundo: #f6f4f0;
+    --invertido-tinta: #0d0d0d;
   }
 }
 
@@ -72,9 +84,9 @@ html, body { margin: 0; padding: 0; height: 100%; }
 body {
   background: var(--papel);
   color: var(--tinta);
-  font-family: var(--sans);
+  font-family: var(--fonte);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
@@ -85,71 +97,60 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 
 /* ── esqueleto ─────────────────────────────────────────────────────────── */
 
-.aplicativo {
-  max-width: var(--largura);
-  margin: 0 auto;
-  min-height: 100%;
-}
+.aplicativo { max-width: var(--largura); margin: 0 auto; min-height: 100%; }
 
 .topo {
   position: sticky;
   top: 0;
   z-index: 20;
-  height: calc(52px + env(safe-area-inset-top));
+  height: calc(54px + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) var(--margem) 0;
   display: flex;
   align-items: center;
   gap: 10px;
   background: var(--papel);
+  border-bottom: var(--traco) solid transparent;
+  transition: border-color 0.15s;
 }
-/* Sem sombra na rolagem: um fio, e só quando há conteúdo acima. */
-.topo::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 1px;
-  background: var(--linha-fina);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.topo.rolado::after { opacity: 1; }
+.topo.rolado { border-bottom-color: var(--borda); }
 
 .topo-titulo {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--tinta-2);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .topo-titulo.nome {
-  font-family: var(--serif);
   font-size: 19px;
-  font-weight: 450;
-  letter-spacing: -0.005em;
-  color: var(--tinta);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
 }
 
 .topo-acao {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
-  color: var(--tinta-2);
-  margin-right: -8px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  margin-right: -4px;
 }
-.topo-acao.voltar { margin: 0 -6px 0 -9px; }
-.topo-acao:active { color: var(--tinta); }
+.topo-acao:active { background: var(--tinta); color: var(--papel); }
+.topo-acao.voltar { margin: 0 0 0 -4px; }
 
 .tela {
-  padding: 4px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 40px);
+  padding: 14px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
   outline: none;
 }
-.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 110px); }
+.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 108px); }
 
-/* ── navegação: só palavra, sem ícone ──────────────────────────────────── */
+/* ── navegação ─────────────────────────────────────────────────────────── */
 
 .abas {
   position: fixed;
@@ -157,337 +158,400 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   z-index: 30;
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--papel);
-  border-top: 1px solid var(--linha-fina);
+  border-top: var(--traco) solid var(--borda);
 }
 .abas-interno {
   display: flex;
   width: 100%;
   max-width: var(--largura);
   margin: 0 auto;
-  padding: 0 calc(var(--margem) - 10px);
 }
 .aba {
   flex: 1;
   height: var(--abas-altura);
-  font-size: 13px;
-  font-weight: 450;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--tinta-3);
-  transition: color 0.15s;
+  position: relative;
 }
-.aba[aria-current="page"] { color: var(--tinta); font-weight: 550; }
+.aba[aria-current="page"] { color: var(--tinta); }
+/* A aba ativa ganha um traço sólido no topo, encaixado na borda da barra. */
+.aba[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--traco) * -1);
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--tinta);
+}
 
-.icone { width: 19px; height: 19px; flex: none; display: block; }
+.icone { width: 18px; height: 18px; flex: none; display: block; }
 
 /* ── tipografia ───────────────────────────────────────────────────────── */
 
-/* Toda quantia é serifada e com algarismos de largura fixa: as colunas de
-   valor alinham sozinhas, sem tabela. */
 .cifra {
-  font-family: var(--serif);
   font-variant-numeric: tabular-nums lining-nums;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   white-space: nowrap;
 }
-.cifra-heroi { font-size: 46px; line-height: 1.05; letter-spacing: -0.022em; }
-.cifra-grande { font-size: 30px; line-height: 1.1; letter-spacing: -0.018em; }
-.cifra-media { font-size: 19px; }
-.cifra-peq { font-size: 16px; }
+.cifra-heroi { font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
+.cifra-grande { font-size: 28px; font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; }
+.cifra-media { font-size: 17px; }
+.cifra-peq { font-size: 15px; }
 
-.rotulo {
-  font-size: 12.5px;
-  font-weight: 450;
-  color: var(--tinta-3);
-}
-
-/* Micro-etiqueta editorial: caixa alta, bem espaçada, bem discreta. */
+/* Rótulo do sistema: caixa alta, pesado, pequeno. Aparece sobre todo número
+   que precisa dizer o que é. */
 .etiqueta {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.11em;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--tinta-3);
 }
 
+.legenda { font-size: 12.5px; font-weight: 500; color: var(--tinta-2); }
+
+/* ── blocos ───────────────────────────────────────────────────────────── */
+
+.bloco {
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  padding: 16px;
+  background: var(--papel);
+}
+
+/* O bloco âncora da tela: preto sólido, texto invertido. Um por tela. */
+.bloco-forte {
+  background: var(--invertido-fundo);
+  color: var(--invertido-tinta);
+  border-color: var(--invertido-fundo);
+  padding: 20px 18px;
+}
+.bloco-forte .etiqueta { color: var(--invertido-tinta); opacity: 0.62; }
+
+/* Três números lado a lado, dividindo traço — uma régua, não três cartões. */
+.trinca {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  margin-top: 10px;
+  overflow: hidden;
+}
+.trinca-item { padding: 12px 11px 13px; min-width: 0; }
+.trinca-item + .trinca-item { border-left: var(--traco) solid var(--borda); }
+.trinca-item .etiqueta { display: block; margin-bottom: 5px; font-size: 9.5px; }
+.trinca-item .cifra {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── seções ───────────────────────────────────────────────────────────── */
 
-.secao { margin-top: 34px; }
-.secao:first-child { margin-top: 18px; }
+.secao { margin-top: 30px; }
 
 .secao-cabecalho {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
-  padding-bottom: 4px;
+  margin-bottom: 10px;
 }
-.secao-cabecalho .etiqueta { flex: none; }
-.secao-valor { margin-left: auto; font-size: 12.5px; color: var(--tinta-3); }
-
-/* ── bloco de destaque (os números da operação) ────────────────────────── */
-
-.destaque { padding: 26px 0 4px; }
-.destaque .etiqueta { display: block; margin-bottom: 9px; }
-.destaque .cifra-heroi { display: block; }
-
-/* Fio proporcional: quanto do que há a receber já venceu. Substitui qualquer
-   gráfico — é uma régua de 2px e diz a mesma coisa. */
-.regua {
-  display: flex;
-  height: 2px;
-  margin-top: 20px;
-  background: var(--linha-fina);
+.secao-cabecalho .etiqueta { color: var(--tinta); }
+.secao-valor {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tinta-2);
+  font-variant-numeric: tabular-nums;
 }
-.regua span { display: block; height: 100%; }
-.regua .vencido { background: var(--atraso); }
 
-/* ── linhas de extrato: etiqueta à esquerda, valor à direita ───────────── */
+/* ── cobrança: um bloco por CLIENTE, não por parcela ───────────────────── */
 
-.extrato { margin-top: 22px; }
-.extrato-linha {
+.cobranca {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  padding: 14px 15px;
+  background: var(--papel);
+}
+.cobranca + .cobranca { margin-top: 8px; }
+.cobranca:active { background: var(--papel-2); }
+.cobranca.urgente { border-color: var(--atraso); background: var(--atraso-fundo); }
+
+.cobranca-topo {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  padding: 11px 0;
-  border-top: 1px solid var(--linha-fina);
-  width: 100%;
-  text-align: left;
-  color: inherit;
+  gap: 12px;
 }
-.extrato-linha:last-child { border-bottom: 1px solid var(--linha-fina); }
-.extrato-rotulo { color: var(--tinta-2); font-size: 13.5px; }
-.extrato-linha dd { margin: 0; }
+.cobranca-nome {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cobranca-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--tinta-2);
+}
+.cobranca.urgente .cobranca-sub { color: var(--atraso); font-weight: 600; }
 
-/* ── item de lista (cliente, parcela, movimento) ───────────────────────── */
+/* ── lista simples (clientes, parcelas, extrato) ───────────────────────── */
 
-.itens { display: block; }
+.itens { border-top: var(--traco) solid var(--borda); }
 
 .item {
   display: flex;
-  align-items: baseline;
-  gap: 16px;
+  align-items: center;
+  gap: 14px;
   width: 100%;
-  padding: 15px 0;
+  padding: 14px 0;
   text-align: left;
   color: inherit;
-  border-top: 1px solid var(--linha-fina);
+  border-bottom: 1px solid var(--borda-suave);
 }
-.itens .item:first-child { border-top: none; }
 .item:active { opacity: 0.55; }
 
 .item-corpo { flex: 1; min-width: 0; }
-/* Nome e legenda são blocos declarados, não linhas que por acaso quebraram:
-   `overflow`/`text-overflow` só valem em caixa de bloco, e sem isto o nome
-   longo empurraria a quantia em vez de ser cortado com reticências. */
 .item-nome, .item-sub { display: block; }
 .item-nome {
-  font-size: 15.5px;
-  font-weight: 480;
-  letter-spacing: -0.006em;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.012em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .item-sub {
-  font-size: 12.5px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--tinta-3);
   margin-top: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.item-fim {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-}
-.item-fim .item-sub { margin-top: 3px; }
+.item-fim { flex: none; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.item-fim .item-sub { margin-top: 2px; }
 
 .mais {
   display: block;
   width: 100%;
-  padding: 13px 0 0;
+  padding: 12px 0 0;
   text-align: left;
-  font-size: 12.5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
   color: var(--tinta-3);
 }
+
+/* ── extrato: rótulo à esquerda, quantia à direita ─────────────────────── */
+
+.extrato { margin: 14px 0 0; border-top: var(--traco) solid var(--borda); }
+.extrato-linha {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--borda-suave);
+  width: 100%;
+  text-align: left;
+  color: inherit;
+}
+.extrato-rotulo { font-size: 13px; font-weight: 500; color: var(--tinta-2); }
+.extrato-linha dd { margin: 0; }
 
 /* ── parcelas ─────────────────────────────────────────────────────────── */
 
 .parcela {
   display: flex;
-  align-items: baseline;
-  gap: 14px;
+  align-items: center;
+  gap: 13px;
   width: 100%;
   padding: 12px 0;
   text-align: left;
   color: inherit;
-  border-top: 1px solid var(--linha-fina);
+  border-bottom: 1px solid var(--borda-suave);
 }
 .parcela:active { opacity: 0.55; }
 .parcela-numero {
   flex: none;
-  width: 22px;
-  font-family: var(--serif);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--borda-suave);
+  border-radius: var(--raio);
+  font-size: 11px;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
-  font-size: 13px;
   color: var(--tinta-3);
 }
-.parcela.paga .parcela-numero { color: var(--recebido); }
-.parcela.atrasada .parcela-numero { color: var(--atraso); }
-.parcela-info { flex: 1; min-width: 0; font-size: 14.5px; }
-.parcela-sub { font-size: 12px; color: var(--tinta-3); margin-top: 2px; }
-.parcela.paga .parcela-info,
-.parcela.paga .parcela-valor { color: var(--tinta-3); }
+.parcela.paga .parcela-numero {
+  background: var(--recebido);
+  border-color: var(--recebido);
+  color: #fff;
+}
+.parcela.atrasada .parcela-numero { border-color: var(--atraso); color: var(--atraso); }
+.parcela-info { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; }
+.parcela-sub { display: block; font-size: 11.5px; font-weight: 500; color: var(--tinta-3); margin-top: 1px; }
+.parcela.paga .parcela-info, .parcela.paga .parcela-valor { color: var(--tinta-3); }
 
-/* ── botões ───────────────────────────────────────────────────────────── */
+/* ── botões: com borda, com peso ───────────────────────────────────────── */
 
 .botao {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 8px;
   height: 50px;
   padding: 0 20px;
-  border-radius: 3px;
-  border: 1px solid var(--linha);
-  font-size: 14.5px;
-  font-weight: 500;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   white-space: nowrap;
   color: var(--tinta);
-  transition: opacity 0.12s;
+  background: var(--papel);
+  transition: opacity 0.1s;
 }
-.botao:active { opacity: 0.6; }
-.botao:disabled { opacity: 0.35; pointer-events: none; }
-.botao .icone { width: 16px; height: 16px; }
+.botao:active { opacity: 0.65; }
+.botao:disabled { opacity: 0.3; pointer-events: none; }
+.botao .icone { width: 15px; height: 15px; }
 
 .botao-primario {
-  background: var(--tinta);
-  border-color: var(--tinta);
-  color: var(--papel);
+  background: var(--invertido-fundo);
+  border-color: var(--invertido-fundo);
+  color: var(--invertido-tinta);
 }
-/* Confirmação destrutiva: contorno na cor do atraso, nunca um bloco vermelho.
-   Precisa avisar, não gritar. */
 .botao-perigo { color: var(--atraso); border-color: var(--atraso); }
 .botao-bloco { width: 100%; }
+.botao-baixo { height: 42px; font-size: 11px; }
 
-/* Ação textual: sublinhado fino, sem caixa. É o botão padrão do sistema. */
-.acao {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--tinta);
-  padding: 6px 0;
-  border-bottom: 1px solid var(--linha);
-  transition: opacity 0.12s;
-}
-.acao:active { opacity: 0.5; }
-.acao-perigo { color: var(--atraso); border-bottom-color: transparent; }
-.acao-fraca { color: var(--tinta-3); font-weight: 450; border-bottom-color: transparent; }
-
-.acoes { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 22px; }
+.acoes { display: grid; gap: 8px; margin-top: 12px; }
+.acoes-duplas { grid-template-columns: 1fr 1fr; }
 
 .rodape-acao {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   z-index: 25;
-  padding: 14px var(--margem) calc(14px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, var(--papel) 68%, transparent);
+  padding: 12px var(--margem) calc(12px + env(safe-area-inset-bottom));
+  background: var(--papel);
+  border-top: var(--traco) solid var(--borda);
 }
 .rodape-acao-interno { max-width: var(--largura); margin: 0 auto; }
 
 /* ── formulário ───────────────────────────────────────────────────────── */
 
-.campo { margin-top: 30px; }
-.campo:first-child { margin-top: 12px; }
-.campo .etiqueta { display: block; margin-bottom: 10px; }
-.campo-dica { font-size: 12px; color: var(--tinta-3); margin: 9px 0 0; line-height: 1.5; }
+.campo { margin-top: 24px; }
+.campo:first-child { margin-top: 8px; }
+.campo .etiqueta { display: block; margin-bottom: 8px; color: var(--tinta); }
+.campo-dica { font-size: 11.5px; font-weight: 500; color: var(--tinta-3); margin: 8px 0 0; line-height: 1.5; }
 
-/* Campo é linha, não caixa. */
 .entrada {
   width: 100%;
-  height: 42px;
-  padding: 0 0 6px;
-  border: none;
-  border-bottom: 1px solid var(--linha);
-  background: none;
+  height: 48px;
+  padding: 0 13px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--papel);
   color: var(--tinta);
   font-size: 16px;
-  border-radius: 0;
+  font-weight: 600;
   outline: none;
   appearance: none;
-  transition: border-color 0.15s;
 }
-.entrada:focus { border-bottom-color: var(--tinta); }
-.entrada::placeholder { color: var(--tinta-3); }
-textarea.entrada { height: auto; min-height: 74px; padding-top: 4px; line-height: 1.55; resize: vertical; }
+.entrada:focus { outline: 2px solid var(--tinta); outline-offset: -3px; }
+.entrada::placeholder { color: var(--tinta-3); font-weight: 500; }
+textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-height: 1.5; resize: vertical; }
 
 .entrada-dinheiro {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  border-bottom: 1px solid var(--linha);
-  transition: border-color 0.15s;
+  align-items: center;
+  gap: 9px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  padding-left: 13px;
 }
-.entrada-dinheiro:focus-within { border-bottom-color: var(--tinta); }
-.entrada-dinheiro span { color: var(--tinta-3); font-size: 15px; }
+.entrada-dinheiro:focus-within { outline: 2px solid var(--tinta); outline-offset: -3px; }
+.entrada-dinheiro span { font-size: 14px; font-weight: 700; color: var(--tinta-3); }
 .entrada-dinheiro input {
   flex: 1;
   min-width: 0;
-  height: 52px;
+  height: 56px;
   border: none;
   background: none;
   outline: none;
-  padding: 0;
-  font-family: var(--serif);
-  font-size: 30px;
-  font-weight: 400;
-  font-variant-numeric: tabular-nums lining-nums;
-  letter-spacing: -0.018em;
+  padding: 0 13px 0 0;
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
 }
 
 .busca { position: relative; display: flex; align-items: center; }
-.busca .icone { position: absolute; left: 0; color: var(--tinta-3); width: 16px; height: 16px; pointer-events: none; }
-.busca .entrada { padding-left: 26px; height: 40px; font-size: 15px; }
+.busca .icone { position: absolute; left: 12px; color: var(--tinta-3); width: 16px; height: 16px; pointer-events: none; }
+.busca .entrada { padding-left: 36px; height: 44px; font-size: 15px; }
 
-/* Escolhas: palavras separadas por espaço, a ativa sublinhada. Sem segmento,
-   sem pílula, sem fundo. */
-.opcoes { display: flex; gap: 22px; flex-wrap: wrap; align-items: baseline; }
+/* Escolhas: retângulos com borda. A ativa inverte. */
+.opcoes { display: flex; gap: 7px; flex-wrap: wrap; }
 .opcao {
-  font-size: 15px;
-  font-weight: 450;
-  color: var(--tinta-3);
-  padding: 4px 0;
-  border-bottom: 1.5px solid transparent;
+  min-width: 52px;
+  height: 42px;
+  padding: 0 14px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
+  font-size: 13px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  transition: color 0.14s, border-color 0.14s;
+  color: var(--tinta);
+  background: var(--papel);
+  transition: background 0.1s, color 0.1s;
 }
 .opcao[aria-pressed="true"] {
-  color: var(--tinta);
-  font-weight: 550;
-  border-bottom-color: var(--tinta);
+  background: var(--invertido-fundo);
+  border-color: var(--invertido-fundo);
+  color: var(--invertido-tinta);
 }
 
-.passo { display: flex; align-items: baseline; gap: 18px; }
+.passo { display: flex; align-items: stretch; gap: 7px; }
 .passo button {
-  width: 30px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
-  color: var(--tinta-3);
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
 }
-.passo button:active { color: var(--tinta); }
+.passo button:active { background: var(--tinta); color: var(--papel); }
 .passo input {
-  width: 62px;
-  border: none;
-  border-bottom: 1px solid var(--linha);
+  width: 74px;
+  height: 46px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
   background: none;
   outline: none;
   text-align: center;
-  padding: 0 0 5px;
-  font-family: var(--serif);
-  font-size: 26px;
+  font-size: 20px;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
   appearance: textfield;
   -moz-appearance: textfield;
@@ -501,56 +565,49 @@ textarea.entrada { height: auto; min-height: 74px; padding-top: 4px; line-height
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  padding: 0 0 9px;
-  border-bottom: 1px solid var(--linha);
+  min-height: 56px;
+  padding: 0 13px;
+  border: var(--traco) solid var(--borda);
+  border-radius: var(--raio);
   text-align: left;
   color: inherit;
-  min-height: 40px;
 }
-.seletor-nome { font-family: var(--serif); font-size: 20px; font-weight: 450; }
-.seletor-vazio { color: var(--tinta-3); font-size: 15px; }
+.seletor-nome { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; }
+.seletor-vazio { font-size: 14px; font-weight: 600; color: var(--tinta-3); }
 
 /* ── prévia ───────────────────────────────────────────────────────────── */
 
-.previa { margin-top: 6px; }
-.previa-total { padding: 4px 0 18px; }
-.previa-total .etiqueta { display: block; margin-bottom: 7px; }
-.previa-aviso { font-size: 13px; color: var(--tinta-3); padding: 16px 0; border-top: 1px solid var(--linha-fina); }
-.previa-erro { color: var(--atraso); }
+.previa { margin-top: 4px; }
+.previa-aviso {
+  border: var(--traco) dashed var(--borda-suave);
+  border-radius: var(--raio);
+  padding: 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--tinta-3);
+  margin: 0;
+}
+.previa-erro { border-color: var(--atraso); color: var(--atraso); }
 
 /* ── estado vazio ─────────────────────────────────────────────────────── */
 
-.vazio { padding: 56px 0 20px; max-width: 30ch; }
-.vazio-titulo {
-  font-family: var(--serif);
-  font-size: 23px;
-  font-weight: 450;
-  letter-spacing: -0.012em;
-  line-height: 1.25;
-  margin-bottom: 10px;
+.vazio {
+  border: var(--traco) dashed var(--borda-suave);
+  border-radius: var(--raio);
+  padding: 28px 20px;
+  text-align: left;
 }
-.vazio-texto { font-size: 14px; color: var(--tinta-3); line-height: 1.6; margin: 0; }
-.vazio .acao { display: inline-block; margin-top: 20px; }
+.vazio-titulo { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 7px; }
+.vazio-texto { font-size: 13px; font-weight: 500; color: var(--tinta-2); line-height: 1.55; margin: 0; max-width: 34ch; }
+.vazio .botao { margin-top: 18px; }
 
-.nota { font-size: 12.5px; color: var(--tinta-3); line-height: 1.6; margin: 14px 0 0; }
+.nota { font-size: 12px; font-weight: 500; color: var(--tinta-2); line-height: 1.55; margin: 12px 0 0; }
 
 /* ── folha inferior ───────────────────────────────────────────────────── */
 
-.folha-camada {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
+.folha-camada { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; justify-content: center; }
 .folha-camada[hidden] { display: none; }
-.folha-fundo {
-  position: absolute;
-  inset: 0;
-  background: rgba(18, 17, 16, 0.34);
-  animation: surgir 0.18s ease-out;
-}
+.folha-fundo { position: absolute; inset: 0; background: rgba(14, 14, 14, 0.45); animation: surgir 0.15s ease-out; }
 .folha {
   position: relative;
   width: 100%;
@@ -558,23 +615,16 @@ textarea.entrada { height: auto; min-height: 74px; padding-top: 4px; line-height
   max-height: 88vh;
   overflow-y: auto;
   background: var(--papel);
-  border-radius: 4px 4px 0 0;
-  padding: 26px var(--margem) calc(26px + env(safe-area-inset-bottom));
-  animation: subir 0.24s cubic-bezier(0.22, 0.7, 0.3, 1);
+  border-top: var(--traco) solid var(--borda);
+  padding: 22px var(--margem) calc(22px + env(safe-area-inset-bottom));
+  animation: subir 0.2s cubic-bezier(0.22, 0.7, 0.3, 1);
 }
-.folha-titulo {
-  font-family: var(--serif);
-  font-size: 24px;
-  font-weight: 450;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-  margin: 0 0 8px;
-}
-.folha-texto { font-size: 13.5px; color: var(--tinta-3); margin: 0 0 8px; line-height: 1.55; }
-.folha-acoes { margin-top: 30px; display: grid; gap: 12px; }
+.folha-titulo { font-size: 21px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 7px; }
+.folha-texto { font-size: 13px; font-weight: 500; color: var(--tinta-2); margin: 0 0 6px; line-height: 1.5; }
+.folha-acoes { margin-top: 26px; display: grid; gap: 8px; }
 .folha-lista { max-height: 52vh; overflow-y: auto; }
 
-@keyframes subir { from { transform: translateY(12px); opacity: 0.7; } to { transform: none; opacity: 1; } }
+@keyframes subir { from { transform: translateY(10px); } to { transform: none; } }
 @keyframes surgir { from { opacity: 0; } to { opacity: 1; } }
 
 /* ── aviso flutuante ──────────────────────────────────────────────────── */
@@ -582,16 +632,17 @@ textarea.entrada { height: auto; min-height: 74px; padding-top: 4px; line-height
 .aviso {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--abas-altura) + env(safe-area-inset-bottom) + 18px);
+  bottom: calc(var(--abas-altura) + env(safe-area-inset-bottom) + 16px);
   transform: translateX(-50%);
   z-index: 80;
-  background: var(--tinta);
-  color: var(--papel);
-  padding: 10px 18px;
-  border-radius: 3px;
-  font-size: 13.5px;
-  animation: subir 0.2s ease-out;
-  max-width: calc(100% - 44px);
+  background: var(--invertido-fundo);
+  color: var(--invertido-tinta);
+  padding: 12px 18px;
+  border-radius: var(--raio);
+  font-size: 12.5px;
+  font-weight: 700;
+  animation: subir 0.15s ease-out;
+  max-width: calc(100% - 36px);
   text-align: center;
 }
 .aviso[hidden] { display: none; }
@@ -601,11 +652,10 @@ textarea.entrada { height: auto; min-height: 74px; padding-top: 4px; line-height
 }
 
 /* ── tons ─────────────────────────────────────────────────────────────────
-   Ficam no FIM do arquivo de propósito. São utilitários de uma classe só, e
-   quase sempre convivem com uma classe de componente que também define cor
-   (`.item-sub`, `.parcela-sub`). Com a mesma especificidade, quem vence é
-   quem vem por último — e aqui quem precisa vencer é o tom, porque ele é a
-   informação: um atraso cinza deixa de ser um aviso. */
+   No fim do arquivo de propósito: são utilitários de uma classe só que
+   convivem com classes de componente que também definem cor. Com a mesma
+   especificidade vence quem vem por último, e quem precisa vencer é o tom —
+   um atraso cinza deixa de ser um aviso. */
 
 .tom-atraso { color: var(--atraso); }
 .tom-recebido { color: var(--recebido); }

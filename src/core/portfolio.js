@@ -180,3 +180,47 @@ function agruparPor(lista, chave) {
 function somarSe(lista, filtro, valor) {
   return lista.reduce((t, item) => (filtro(item) ? t + valor(item) : t), 0);
 }
+
+/**
+ * Agrupa itens da agenda por cliente.
+ *
+ * Existe por um motivo de produto, não de código: cobrança se faz por PESSOA,
+ * não por parcela. Uma lista com "Carla Nunes" repetida quatro vezes é quatro
+ * linhas para uma única ligação — e é assim que uma tela fica embolada sem ter
+ * ganhado nenhuma informação.
+ *
+ * @param {object[]} itens itens de `panorama().agenda`
+ * @returns {Array<{clienteId, clienteNome, totalCents, quantidade,
+ *   primeiroVencimento, diasDeAtrasoMax, parcelas}>} ordenado por vencimento
+ */
+export function agruparPorCliente(itens) {
+  const grupos = new Map();
+
+  for (const item of itens) {
+    let grupo = grupos.get(item.clienteId);
+    if (!grupo) {
+      grupo = {
+        clienteId: item.clienteId,
+        clienteNome: item.clienteNome,
+        totalCents: 0,
+        quantidade: 0,
+        primeiroVencimento: item.vencimento,
+        diasDeAtrasoMax: 0,
+        parcelas: [],
+      };
+      grupos.set(item.clienteId, grupo);
+    }
+    grupo.totalCents += item.restanteCents;
+    grupo.quantidade += 1;
+    grupo.parcelas.push(item);
+    if (comparar(item.vencimento, grupo.primeiroVencimento) < 0) {
+      grupo.primeiroVencimento = item.vencimento;
+    }
+    if (item.diasDeAtraso > grupo.diasDeAtrasoMax) grupo.diasDeAtrasoMax = item.diasDeAtraso;
+  }
+
+  return [...grupos.values()].sort((a, b) =>
+    comparar(a.primeiroVencimento, b.primeiroVencimento) ||
+    a.clienteNome.localeCompare(b.clienteNome, 'pt-BR')
+  );
+}
