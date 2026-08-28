@@ -798,8 +798,10 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   justify-content: center;
 }
 .trava-tecla:active { background: var(--papel); box-shadow: none; }
+.trava-tecla:disabled { opacity: 0.35; }
 .trava-apagar { background: none; box-shadow: none; color: var(--tinta-2); }
 .trava-apagar:active { color: var(--tinta); background: none; }
+.trava-apagar:disabled { opacity: 0.35; }
 .trava-apagar .icone { width: 22px; height: 22px; }
 
 .trava .botao { margin-top: auto; }

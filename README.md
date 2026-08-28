@@ -170,7 +170,7 @@ porque toda a camada de cálculo é pura e derivada. É o próximo passo natural
 
 ## Segurança
 
-O app abre atrás de um código de acesso numérico (mínimo de 6 dígitos), criado
+O app abre atrás de um código de acesso numérico (mínimo de 8 dígitos), criado
 no primeiro uso de cada aparelho. Não é só uma tela de bloqueio: os quatro
 dados do produto (`clientes`, `dividas`, `pagamentos`, `caixa`) ficam
 **cifrados de verdade** dentro do `localStorage`, com AES-GCM de 256 bits. A
@@ -180,16 +180,26 @@ de senha para tornar um ataque por força bruta caro. `src/core/crypto.js` e
 `src/core/lock.js` concentram toda essa camada; nenhum outro arquivo do
 produto sabe que os dados estão cifrados.
 
+Depois de 3 tentativas erradas seguidas, o aparelho **entra em espera**: cada
+nova tentativa exige esperar cada vez mais (30s, 1min, 2min, 5min... até um
+teto de 15min), e nem o código certo é aceito enquanto a espera não passar.
+É o que torna inviável ficar tentando adivinhar direto na tela do aparelho —
+o contador vive no próprio armazenamento, então recarregar a página não
+zera a espera de graça.
+
 Vale ser honesto sobre o que essa proteção cobre e o que não cobre:
 
 - **Protege** contra alguém abrir o aparelho e simplesmente olhar os dados —
-  seja folheando o app sem o código, seja inspecionando o `localStorage`
-  diretamente. Sem o código certo, o que existe no disco é ruído.
-- **Não protege** contra um atacante técnico determinado com acesso ao
-  arquivo e tempo: um código curto, mesmo só numérico, tem um espaço de busca
-  finito. O PBKDF2 encarece cada tentativa, mas não a torna impossível. Quanto
-  maior o código, mais forte a proteção — vale usar mais que o mínimo de 6
-  dígitos se o aparelho puder ser perdido ou roubado.
+  seja folheando o app sem o código, seja tentando adivinhar o código na
+  tela (o bloqueio progressivo cuida disso), seja inspecionando o
+  `localStorage` diretamente. Sem o código certo, o que existe no disco é
+  ruído.
+- **Não protege** contra um atacante técnico determinado com acesso direto
+  ao arquivo cifrado, fora da tela do app: aí o bloqueio progressivo não
+  existe mais, e resta só o PBKDF2 encarecendo cada tentativa offline — caro,
+  mas não impossível para um código curto. Quanto maior o código, mais forte
+  a proteção — vale usar mais que o mínimo de 8 dígitos se o aparelho puder
+  ser perdido ou roubado.
 - **Cada aparelho tem seu próprio código**, exatamente como cada aparelho já
   tinha seus próprios dados: não é uma conta, não há servidor, não há "esqueci
   a senha" por e-mail. Errar o código não revela nada — nem um byte do dado

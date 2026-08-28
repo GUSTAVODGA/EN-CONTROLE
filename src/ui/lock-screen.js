@@ -20,6 +20,7 @@ import { icones } from './icons.js';
 import { confirmar } from './sheet.js';
 import {
   temCodigo, criarCodigo, verificarCodigo, apagarTudo, codigoValido, TAMANHO_MINIMO_CODIGO,
+  statusBloqueio, formatarEspera,
 } from '../core/lock.js';
 import { lerCriptografado, CHAVE_ARMAZENAMENTO } from '../core/store.js';
 import { estadoVazio } from '../core/model.js';
@@ -87,6 +88,7 @@ function modoEntrar(aoDesbloquear) {
     texto: 'Digite o código deste aparelho.',
     rotuloConfirmar: 'Entrar',
     minimo: TAMANHO_MINIMO_CODIGO,
+    obterBloqueio: () => statusBloqueio(),
     linkRodape: { rotulo: 'Esqueci o código', acao: () => abrirEsqueciOCodigo(aoDesbloquear) },
     async aoConfirmar(codigo, { erro }) {
       try {
@@ -123,11 +125,14 @@ function abrirEsqueciOCodigo(aoDesbloquear) {
 
 /**
  * @param {object} opcoes
+ * @param {function(): {bloqueado: boolean, restanteMs: number}} [opcoes.obterBloqueio]
+ *   só faz sentido no modo "entrar" — no modo "criar" não há o que adivinhar.
  * @param {function(string, {erro:function}): (void|Promise<void>)} opcoes.aoConfirmar
  */
-function desenharTeclado({ titulo, texto, rotuloConfirmar, minimo, linkRodape, aoConfirmar }) {
+function desenharTeclado({ titulo, texto, rotuloConfirmar, minimo, linkRodape, obterBloqueio, aoConfirmar }) {
   let digitado = '';
   let processando = false;
+  let temporizador = null;
 
   elTela().className = 'tela sem-abas';
   elTela().innerHTML = `
@@ -177,6 +182,41 @@ function desenharTeclado({ titulo, texto, rotuloConfirmar, minimo, linkRodape, a
     container.classList.add('tremendo');
   }
 
+  function definirTeclasHabilitadas(habilitadas) {
+    elTela().querySelectorAll('[data-tecla]').forEach(botao => { botao.disabled = !habilitadas; });
+  }
+
+  function aplicarBloqueio() {
+    if (!obterBloqueio) return false;
+    const { bloqueado, restanteMs } = obterBloqueio();
+    if (!bloqueado) {
+      if (temporizador) { clearInterval(temporizador); temporizador = null; }
+      definirTeclasHabilitadas(true);
+      redesenharPontos();
+      return false;
+    }
+    digitado = '';
+    redesenharPontos();
+    definirTeclasHabilitadas(false);
+    elConfirmar.disabled = true;
+    const atualizar = () => {
+      const estado = obterBloqueio();
+      if (!estado.bloqueado) {
+        clearInterval(temporizador);
+        temporizador = null;
+        definirTeclasHabilitadas(true);
+        elErro.hidden = true;
+        redesenharPontos();
+        return;
+      }
+      elErro.hidden = false;
+      elErro.textContent = `Muitas tentativas erradas. Tente de novo em ${formatarEspera(Math.ceil(estado.restanteMs / 1000))}.`;
+    };
+    atualizar();
+    if (!temporizador) temporizador = setInterval(atualizar, 1000);
+    return true;
+  }
+
   elTela().querySelectorAll('[data-tecla]').forEach(botao => {
     botao.addEventListener('click', () => {
       if (processando) return;
@@ -206,12 +246,13 @@ function desenharTeclado({ titulo, texto, rotuloConfirmar, minimo, linkRodape, a
       // teclado ainda for o mesmo na tela.
       if (document.getElementById('trava-confirmar') === elConfirmar) {
         elConfirmar.textContent = rotuloConfirmar;
-        redesenharPontos();
+        if (!aplicarBloqueio()) redesenharPontos();
       }
     }
   });
 
   redesenharPontos();
+  aplicarBloqueio();
 }
 
 function teclaNumero(n) {
