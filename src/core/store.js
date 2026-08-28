@@ -13,7 +13,7 @@
 // ══════════════════════════════════════════════════════════════════════════
 
 import {
-  estadoVazio, normalizar,
+  normalizar,
   criarCliente, aplicarEdicaoCliente, criarDivida, criarPagamento, criarMovimentoCaixa,
 } from './model.js';
 
@@ -145,17 +145,6 @@ export function criarStore(adaptador = adaptadorLocal()) {
 
     removerMovimentoCaixa(id) {
       aplicar(e => ({ caixa: e.caixa.filter(m => m.id !== id) }));
-    },
-
-    // ── estado inteiro ────────────────────────────────────────────────────
-    substituir(novoEstado) {
-      const limpo = normalizar(novoEstado);
-      aplicar(() => limpo);
-      return limpo;
-    },
-
-    limpar() {
-      aplicar(() => estadoVazio());
     },
   };
 }

@@ -12,7 +12,6 @@ import { criarStore } from './core/store.js';
 import { panorama } from './core/portfolio.js';
 import { hoje as dataDeHoje } from './core/dates.js';
 import { formatarReais } from './core/money.js';
-import { dadosDeExemplo } from './core/sample.js';
 
 import { esc, avisar } from './ui/dom.js';
 import { icones } from './ui/icons.js';
@@ -245,38 +244,6 @@ const ACOES = {
         ctx.store.removerPagamento(pagamento.id);
         avisar('Pagamento removido.');
         ctx.atualizar();
-      },
-    });
-  },
-
-  'carregar-exemplo'(alvo, ctx) {
-    const temDados = ctx.dados.clientes.length > 0 && !ctx.dados.exemplo;
-    const carregar = () => {
-      ctx.store.substituir(dadosDeExemplo(ctx.hoje));
-      avisar('Dados de exemplo carregados.');
-      ir('#/');
-    };
-
-    if (!temDados) return carregar();
-    confirmar({
-      titulo: 'Substituir os dados atuais?',
-      texto: 'Os clientes, dívidas e pagamentos já cadastrados serão apagados e trocados pelos de exemplo.',
-      rotuloConfirmar: 'Carregar exemplo',
-      perigo: true,
-      aoConfirmar: carregar,
-    });
-  },
-
-  'limpar-exemplo'(alvo, ctx) {
-    confirmar({
-      titulo: 'Limpar os dados de exemplo?',
-      texto: 'Tudo volta a ficar vazio para você começar com os dados reais.',
-      rotuloConfirmar: 'Limpar tudo',
-      perigo: true,
-      aoConfirmar() {
-        ctx.store.limpar();
-        avisar('Pronto: sistema vazio.');
-        ir('#/');
       },
     });
   },

@@ -30,8 +30,6 @@ function conteudo(ctx) {
   const proximas = pano.agenda.proximas;
 
   return `
-    ${ctx.dados.exemplo ? avisoExemplo() : ''}
-
     ${blocoResumoCaixa(pano)}
 
     ${paraCobrar.length > 0 ? `<section class="secao">
@@ -73,9 +71,3 @@ function primeiraVez() {
   `;
 }
 
-function avisoExemplo() {
-  return `<div style="display:flex;align-items:center;gap:12px;margin:0 0 16px">
-    <span class="etiqueta">Dados de exemplo</span>
-    <button class="botao botao-baixo" data-acao="limpar-exemplo">Limpar</button>
-  </div>`;
-}

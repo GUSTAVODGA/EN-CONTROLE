@@ -145,7 +145,6 @@ src/core/     regra financeira pura — sem DOM, sem armazenamento, testável
   portfolio.js   os quatro números e a agenda
   model.js       entidades, validação e saneamento na leitura
   store.js       mutações e persistência (adaptador injetável)
-  sample.js      dados de exemplo (nenhum dado real)
 
 src/ui/       telas e componentes; nenhuma regra de negócio mora aqui
 ```

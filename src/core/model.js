@@ -32,7 +32,7 @@ export function novoId(prefixo = 'id') {
 
 /** O estado inicial de uma operação vazia. */
 export function estadoVazio() {
-  return { versao: VERSAO_DADOS, clientes: [], dividas: [], pagamentos: [], caixa: [], exemplo: false };
+  return { versao: VERSAO_DADOS, clientes: [], dividas: [], pagamentos: [], caixa: [] };
 }
 
 // ── clientes ──────────────────────────────────────────────────────────────
@@ -250,7 +250,7 @@ export function normalizar(bruto) {
       criadoEm: Number(m.criadoEm) || 0,
     }));
 
-  return { versao: VERSAO_DADOS, clientes, dividas, pagamentos, caixa, exemplo: bruto.exemplo === true };
+  return { versao: VERSAO_DADOS, clientes, dividas, pagamentos, caixa };
 }
 
 function arranjo(v) {

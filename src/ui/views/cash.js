@@ -59,12 +59,6 @@ export function telaCaixa(ctx) {
         ${movimentos.length > visiveis.length
           ? `<span class="mais">mostrando os ${visiveis.length} mais recentes</span>` : ''}
       </section>
-
-      <div class="acoes" style="margin-top:44px">
-        ${ctx.dados.exemplo
-          ? '<button class="botao botao-baixo" data-acao="limpar-exemplo">Limpar dados de exemplo</button>'
-          : '<button class="botao botao-baixo" data-acao="carregar-exemplo">Ver com dados de exemplo</button>'}
-      </div>
     `,
   };
 }

@@ -157,7 +157,12 @@ export function telaNovaDivida(ctx) {
       valor.addEventListener('input', () => { rascunho.valorTexto = valor.value; redesenharPrevia(raiz); });
       if (juros) juros.addEventListener('input', () => { rascunho.jurosTexto = juros.value; redesenharPrevia(raiz); });
       parcelas.addEventListener('input', () => {
-        const n = Math.max(1, Math.min(MAX_PARCELAS, Number(parcelas.value) || 1));
+        const bruto = Number(parcelas.value) || 1;
+        const n = Math.max(1, Math.min(MAX_PARCELAS, bruto));
+        // Só corrige o campo quando o valor digitado extrapola o limite — do
+        // contrário, corrigir a cada tecla atrapalharia quem está no meio de
+        // digitar um número de dois ou três dígitos ainda válido.
+        if (bruto > MAX_PARCELAS) parcelas.value = String(n);
         rascunho.parcelas = n;
         redesenharPrevia(raiz);
       });
