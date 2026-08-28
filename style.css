@@ -226,11 +226,6 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 
 .legenda { font-size: 12.5px; font-weight: 500; color: var(--tinta-2); }
 
-.tom-atraso { color: var(--atraso); }
-.tom-recebido { color: var(--recebido); }
-.tom-suave { color: var(--tinta-2); }
-.tom-fraco { color: var(--tinta-3); }
-
 /* ── o bloco verde: âncora do Início ──────────────────────────────────── */
 
 .bloco-forte {
@@ -726,6 +721,110 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   text-align: center;
 }
 .aviso[hidden] { display: none; }
+
+/* ── tela de trava ────────────────────────────────────────────────────── */
+
+.trava {
+  min-height: calc(100vh - var(--margem) * 2);
+  min-height: calc(100dvh - var(--margem) * 2);
+  display: flex;
+  flex-direction: column;
+  padding-top: max(24px, env(safe-area-inset-top));
+}
+
+.trava-topo { margin-bottom: 28px; }
+.trava-titulo {
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.trava-texto { font-size: 13.5px; font-weight: 500; color: var(--tinta-2); line-height: 1.5; margin: 0; max-width: 34ch; }
+
+.trava-pontos {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  min-height: 16px;
+  margin-bottom: 10px;
+}
+.trava-ponto {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--acento);
+  flex: none;
+}
+
+.trava-erro {
+  color: var(--atraso);
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 18px;
+  margin: 0 0 8px;
+}
+.trava-erro[hidden] { visibility: hidden; }
+
+/* O tremor de senha errada: um sacode curto e simétrico, sem exagero. */
+.trava.tremendo { animation: tremer 0.4s ease-in-out; }
+@keyframes tremer {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+.trava-teclado {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  max-width: 300px;
+  margin: 8px 0 28px;
+}
+.trava-tecla {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 500;
+  color: var(--tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trava-tecla:active { background: var(--papel); box-shadow: none; }
+.trava-apagar { background: none; box-shadow: none; color: var(--tinta-2); }
+.trava-apagar:active { color: var(--tinta); background: none; }
+.trava-apagar .icone { width: 22px; height: 22px; }
+
+.trava .botao { margin-top: auto; }
+
+.trava-link {
+  display: block;
+  margin: 18px auto 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+  text-align: center;
+}
+.trava-link:active { color: var(--tinta); }
+
+/* ── tons ─────────────────────────────────────────────────────────────────
+   No fim do arquivo de propósito: são utilitários de uma classe só que
+   convivem com classes de componente (.item-sub, .parcela-sub, .etiqueta...)
+   que também definem cor. Com a mesma especificidade, vence quem vem por
+   último no arquivo — e quem precisa vencer é o tom, porque ele é a
+   informação: um atraso cinza deixa de ser um aviso. */
+
+.tom-atraso { color: var(--atraso); }
+.tom-recebido { color: var(--recebido); }
+.tom-suave { color: var(--tinta-2); }
+.tom-fraco { color: var(--tinta-3); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }

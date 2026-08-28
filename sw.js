@@ -9,7 +9,7 @@
 // custa mais caro do que uma abertura offline mais lenta. O cache existe para
 // o aplicativo abrir sem sinal, não para acelerar o caso normal.
 
-const CACHE = 'en-controle-v2';
+const CACHE = 'en-controle-v3';
 
 const ESSENCIAIS = [
   './',
@@ -19,6 +19,7 @@ const ESSENCIAIS = [
   './fontes/manrope.woff2',
   './manifest.json',
   './icone.svg',
+  './icone-cheio.svg',
 ];
 
 self.addEventListener('install', evento => {

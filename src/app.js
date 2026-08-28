@@ -8,7 +8,7 @@
 // gravado.
 // ══════════════════════════════════════════════════════════════════════════
 
-import { criarStore } from './core/store.js';
+import { criarStore, adaptadorCriptografado } from './core/store.js';
 import { panorama } from './core/portfolio.js';
 import { hoje as dataDeHoje } from './core/dates.js';
 import { formatarReais } from './core/money.js';
@@ -24,8 +24,12 @@ import { telaClientes } from './ui/views/clients.js';
 import { telaCliente, alternarDivida } from './ui/views/client.js';
 import { telaNovaDivida, prepararNovaDivida, acoesNovaDivida } from './ui/views/new-debt.js';
 import { telaCaixa, acoesCaixa } from './ui/views/cash.js';
+import { iniciarTrava } from './ui/lock-screen.js';
 
-const store = criarStore();
+// Só existe depois do desbloqueio: `iniciarTrava` deriva a chave a partir do
+// código de acesso e só então chama `montarApp`, que cria o store de verdade.
+// Até lá, nenhuma função abaixo é executada — a tela é inteira da trava.
+let store;
 
 // A navegação é feita de palavras. Ícone de aba seria decoração: com três
 // destinos e nomes curtos, o rótulo já é o mais rápido de ler.
@@ -94,6 +98,10 @@ function atualizar({ manterFoco = null } = {}) {
 }
 
 function desenhar({ manterFoco = null, preservarRolagem = false } = {}) {
+  // Defesa contra uma segunda aba: se esta aba ainda está na tela de trava e
+  // uma mudança de hash ou um evento de `storage` chega antes do
+  // desbloqueio, não há estado nenhum para desenhar.
+  if (!store) return;
   const ctx = contexto();
   const construir = TELAS[ctx.rota.nome] || telaInicio;
 
@@ -278,11 +286,13 @@ window.addEventListener('scroll', atualizarSombraDoTopo, { passive: true });
 // a tela precisa acompanhar.
 window.addEventListener('storage', () => desenhar({ preservarRolagem: true }));
 
-if (lerRota().nome === 'nova-divida') prepararNovaDivida(lerRota().params.cliente || null);
-desenhar({ preservarRolagem: false });
+function montarApp() {
+  if (lerRota().nome === 'nova-divida') prepararNovaDivida(lerRota().params.cliente || null);
+  desenhar({ preservarRolagem: false });
 
-if (store.gravacaoFalhou()) {
-  avisar('Não foi possível gravar neste aparelho. Verifique o espaço disponível.');
+  if (store.gravacaoFalhou()) {
+    avisar('Não foi possível gravar neste aparelho. Verifique o espaço disponível.');
+  }
 }
 
 // O escopo é declarado explicitamente para que o registro cubra exatamente o
@@ -294,3 +304,11 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+// O portão de entrada: nada acima desta linha usa `store`, e nada abaixo dela
+// é preciso — `iniciarTrava` mostra o teclado, deriva a chave do código
+// digitado e só então chama `montarApp`, entregando o app inteiro.
+iniciarTrava((chave, estadoInicial) => {
+  store = criarStore(adaptadorCriptografado(chave), estadoInicial);
+  montarApp();
+});
