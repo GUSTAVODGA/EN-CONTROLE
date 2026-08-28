@@ -1,79 +1,88 @@
 /* ══════════════════════════════════════════════════════════════════════════
    EN CONTROLE — sistema visual
 
-   PAINEL, não aplicativo. A referência é um quadro de controle impresso:
-   fundo branco, blocos delimitados por traço preto de verdade, número grande
-   e pesado, rótulo em caixa alta. Nada flutua, nada é macio, nada é sutil.
+   EDITORIAL, não aplicativo bancário. A referência é uma boa peça impressa:
+   fundo bege quente, números importantes em serifa grande, um único bloco de
+   cor (verde-escuro) que ancora cada tela, cartões brancos macios com sombra
+   suave — nunca borda dura — e botões em pílula.
 
-   As três decisões que definem o resto:
+   REGRA DE OURO DA TIPOGRAFIA, e ela é a coisa mais importante deste arquivo:
+   a serifa (Fraunces) é reservada para DUAS coisas só — o valor em caixa (o
+   número que a tela inteira existe para responder) e nomes de pessoa. Todo
+   resto — estatística, total de dívida, parcela, rótulo — é Manrope em negrito.
+   Não é estética: é hierarquia. Se tudo fosse serifado, nada seria especial.
 
-   1. BORDA, não sombra. Cada bloco é fechado por um traço de 1,5px na cor da
-      tinta. É o que dá definição sem precisar de profundidade falsa.
-   2. PESO. Os números são 800, os nomes 700, os rótulos 700 em caixa alta.
-      A hierarquia se lê de longe, com a tela no bolso e o sol batendo.
-   3. INVERSÃO. O número mais importante da tela vive num bloco preto sólido
-      com texto branco. Um por tela, no máximo — é o que ancora a página.
-
-   Fundo branco com traço preto é o oposto exato de cartão claro com sombra
-   suave sobre fundo cinza, que é o que este produto NÃO deve parecer.
+   O que este sistema NÃO usa: cartão claro sobre fundo cinza corporativo (é o
+   oposto: fundo já é quente, cartão é branco puro), borda grossa como
+   ornamento, caixa alta em tudo, ícone decorativo, esquina reta.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Archivo: grotesca de traço industrial, com pesos altos que aguentam número
-   grande sem borrar. Hospedada aqui — o app abre offline e fica idêntica em
-   qualquer aparelho. */
 @font-face {
-  font-family: 'Archivo';
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./fontes/fraunces.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Manrope';
   font-style: normal;
   font-weight: 400 800;
   font-display: swap;
-  src: url('./fontes/archivo.woff2') format('woff2');
+  src: url('./fontes/manrope.woff2') format('woff2');
 }
 
 :root {
-  --papel: #ffffff;
-  --papel-2: #f4f2ed;
+  --papel: #fbf7f0;
+  --superficie: #ffffff;
 
-  --tinta: #0e0e0e;
-  --tinta-2: #55524c;
-  --tinta-3: #8b877f;
+  --tinta: #1f1b16;
+  --tinta-2: #5b5346;
+  --tinta-3: #8a7f6f;
 
-  --borda: #0e0e0e;
-  --borda-suave: #ddd9d1;
+  --linha: #e7e0d3;
 
-  --atraso: #bf3a1d;
-  --atraso-fundo: #fdeee9;
-  --recebido: #1c6742;
+  --acento: #1f3d2f;
+  --acento-tinta: #fbf7f0;
 
-  --invertido-fundo: #0e0e0e;
-  --invertido-tinta: #ffffff;
+  --atraso: #c1502f;
+  --atraso-fundo: #fbe9e2;
+  --atraso-sobre-acento: #f2b199;
+  --recebido: #2f6b4f;
 
-  --fonte: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sombra: 0 1px 2px rgba(31, 27, 22, 0.05), 0 8px 24px -14px rgba(31, 27, 22, 0.18);
+
+  --serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+  --sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --largura: 520px;
-  --margem: 18px;
-  --abas-altura: 58px;
-  --traco: 1.5px;
-  --raio: 4px;
+  --margem: 20px;
+  --abas-altura: 60px;
+  --raio: 20px;
+  --raio-sm: 14px;
+  --pilula: 999px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --papel: #0d0d0d;
-    --papel-2: #171716;
+    --papel: #17130f;
+    --superficie: #221d17;
 
-    --tinta: #f6f4f0;
-    --tinta-2: #a29d95;
-    --tinta-3: #726d66;
+    --tinta: #f5efe4;
+    --tinta-2: #b8ab98;
+    --tinta-3: #7d7364;
 
-    --borda: #f6f4f0;
-    --borda-suave: #302e2b;
+    --linha: #362e25;
 
-    --atraso: #ef7a55;
-    --atraso-fundo: #2a1712;
-    --recebido: #59b585;
+    --acento: #2f6b4f;
+    --acento-tinta: #f5efe4;
 
-    --invertido-fundo: #f6f4f0;
-    --invertido-tinta: #0d0d0d;
+    --atraso: #e8896b;
+    --atraso-fundo: #3a241c;
+    --atraso-sobre-acento: #f6c6ac;
+    --recebido: #7fbd9c;
+
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 26px -14px rgba(0, 0, 0, 0.55);
   }
 }
 
@@ -84,9 +93,9 @@ html, body { margin: 0; padding: 0; height: 100%; }
 body {
   background: var(--papel);
   color: var(--tinta);
-  font-family: var(--fonte);
+  font-family: var(--sans);
   font-size: 16px;
-  line-height: 1.45;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
@@ -103,52 +112,49 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   position: sticky;
   top: 0;
   z-index: 20;
-  height: calc(54px + env(safe-area-inset-top));
+  height: calc(56px + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) var(--margem) 0;
   display: flex;
   align-items: center;
   gap: 10px;
   background: var(--papel);
-  border-bottom: var(--traco) solid transparent;
+  border-bottom: 1px solid transparent;
   transition: border-color 0.15s;
 }
-.topo.rolado { border-bottom-color: var(--borda); }
+.topo.rolado { border-bottom-color: var(--linha); }
 
+/* Todo título de tela é serifado — é a assinatura do produto, presente do
+   Início ("EN Controle") até o nome do cliente na ficha dele. */
 .topo-titulo {
   flex: 1;
   min-width: 0;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.topo-titulo.nome {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  text-transform: none;
-}
+.topo-titulo.nome { font-size: 21px; }
 
 .topo-acao {
   width: 36px;
   height: 36px;
   display: grid;
   place-items: center;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
-  margin-right: -4px;
+  border-radius: var(--pilula);
+  color: var(--tinta-2);
+  margin-right: -6px;
 }
-.topo-acao:active { background: var(--tinta); color: var(--papel); }
-.topo-acao.voltar { margin: 0 0 0 -4px; }
+.topo-acao:active { background: var(--linha); }
+.topo-acao.voltar { margin: 0 0 0 -8px; }
 
 .tela {
-  padding: 14px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
+  padding: 8px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
   outline: none;
 }
-.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 108px); }
+.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 110px); }
 
 /* ── navegação ─────────────────────────────────────────────────────────── */
 
@@ -158,7 +164,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   z-index: 30;
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--papel);
-  border-top: var(--traco) solid var(--borda);
+  border-top: 1px solid var(--linha);
 }
 .abas-interno {
   display: flex;
@@ -169,123 +175,153 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
 .aba {
   flex: 1;
   height: var(--abas-altura);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--tinta-3);
-  position: relative;
+  transition: color 0.15s;
 }
-.aba[aria-current="page"] { color: var(--tinta); }
-/* A aba ativa ganha um traço sólido no topo, encaixado na borda da barra. */
-.aba[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  top: calc(var(--traco) * -1);
-  left: 0; right: 0;
-  height: 3px;
-  background: var(--tinta);
-}
+.aba[aria-current="page"] { color: var(--acento); font-weight: 700; }
 
 .icone { width: 18px; height: 18px; flex: none; display: block; }
 
 /* ── tipografia ───────────────────────────────────────────────────────── */
 
+/* Números do dia a dia: Manrope em negrito, tabular. */
 .cifra {
+  font-family: var(--sans);
   font-variant-numeric: tabular-nums lining-nums;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-weight: 800;
+  letter-spacing: -0.015em;
   white-space: nowrap;
 }
-.cifra-heroi { font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
-.cifra-grande { font-size: 28px; font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; }
+.cifra-grande { font-size: 27px; letter-spacing: -0.02em; }
 .cifra-media { font-size: 17px; }
 .cifra-peq { font-size: 15px; }
 
-/* Rótulo do sistema: caixa alta, pesado, pequeno. Aparece sobre todo número
-   que precisa dizer o que é. */
+/* O único número em serifa: o valor em caixa. */
+.cifra-heroi {
+  display: block;
+  font-family: var(--serif);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 600;
+  font-size: 42px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* Nome de pessoa: a outra metade da regra da serifa. */
+.nome-pessoa {
+  font-family: var(--serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
 .etiqueta {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.13em;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--tinta-3);
 }
 
 .legenda { font-size: 12.5px; font-weight: 500; color: var(--tinta-2); }
 
-/* ── blocos ───────────────────────────────────────────────────────────── */
+.tom-atraso { color: var(--atraso); }
+.tom-recebido { color: var(--recebido); }
+.tom-suave { color: var(--tinta-2); }
+.tom-fraco { color: var(--tinta-3); }
+
+/* ── o bloco verde: âncora do Início ──────────────────────────────────── */
+
+.bloco-forte {
+  background: var(--acento);
+  color: var(--acento-tinta);
+  border-radius: var(--raio);
+  padding: 22px 18px;
+}
+.bloco-forte .etiqueta { color: var(--acento-tinta); opacity: 0.62; }
+.bloco-forte .tom-atraso { color: var(--atraso-sobre-acento); }
+
+.resumo-linhas {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+.resumo-col { flex: 1; min-width: 0; }
+.resumo-col .etiqueta { display: block; margin-bottom: 4px; font-size: 9.5px; }
+/* Especificidade proposital: prevalece sobre .cifra-media/.cifra-peq — este
+   número precisa caber em ~90px sem truncar, então o tamanho é fixo aqui. */
+.resumo-col .cifra {
+  display: block;
+  font-size: 14px;
+  letter-spacing: -0.008em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── cartão genérico: fundo branco, sombra suave, sem borda ────────────── */
 
 .bloco {
-  border: var(--traco) solid var(--borda);
+  background: var(--superficie);
   border-radius: var(--raio);
-  padding: 16px;
-  background: var(--papel);
+  box-shadow: var(--sombra);
+  padding: 18px;
 }
 
-/* O bloco âncora da tela: preto sólido, texto invertido. Um por tela. */
-.bloco-forte {
-  background: var(--invertido-fundo);
-  color: var(--invertido-tinta);
-  border-color: var(--invertido-fundo);
-  padding: 20px 18px;
-}
-.bloco-forte .etiqueta { color: var(--invertido-tinta); opacity: 0.62; }
-
-/* Três números lado a lado, dividindo traço — uma régua, não três cartões. */
+/* Três estatísticas dividindo uma régua — usado fora do bloco verde
+   (ficha do cliente, por exemplo), onde os números são secundários. */
 .trinca {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: var(--traco) solid var(--borda);
+  display: flex;
+  background: var(--superficie);
   border-radius: var(--raio);
-  margin-top: 10px;
+  box-shadow: var(--sombra);
   overflow: hidden;
 }
-.trinca-item { padding: 12px 11px 13px; min-width: 0; }
-.trinca-item + .trinca-item { border-left: var(--traco) solid var(--borda); }
-.trinca-item .etiqueta { display: block; margin-bottom: 5px; font-size: 9.5px; }
+.trinca-item { flex: 1; min-width: 0; padding: 14px 12px 15px; }
+.trinca-item + .trinca-item { border-left: 1px solid var(--linha); }
+.trinca-item .etiqueta { display: block; margin-bottom: 4px; }
+/* Mesma lógica do resumo do bloco verde: tamanho fixo, não herdado de
+   .cifra-media/.cifra-peq, para caber em ~90px sem truncar. */
 .trinca-item .cifra {
   display: block;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14.5px;
+  letter-spacing: -0.008em;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* ── seções ───────────────────────────────────────────────────────────── */
 
-.secao { margin-top: 30px; }
+.secao { margin-top: 28px; }
 
 .secao-cabecalho {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
   margin-bottom: 10px;
+  padding: 0 2px;
 }
-.secao-cabecalho .etiqueta { color: var(--tinta); }
-.secao-valor {
-  margin-left: auto;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--tinta-2);
-  font-variant-numeric: tabular-nums;
-}
+.secao-valor { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--tinta-2); }
 
-/* ── cobrança: um bloco por CLIENTE, não por parcela ───────────────────── */
+/* ── cobrança: um cartão por CLIENTE ────────────────────────────────────
+   Cobrança se faz por pessoa. Um cliente com quatro parcelas vencidas ocupa
+   um cartão, não quatro linhas. */
 
 .cobranca {
   display: block;
   width: 100%;
   text-align: left;
   color: inherit;
-  border: var(--traco) solid var(--borda);
+  background: var(--superficie);
   border-radius: var(--raio);
-  padding: 14px 15px;
-  background: var(--papel);
+  box-shadow: var(--sombra);
+  padding: 16px 18px;
 }
-.cobranca + .cobranca { margin-top: 8px; }
-.cobranca:active { background: var(--papel-2); }
-.cobranca.urgente { border-color: var(--atraso); background: var(--atraso-fundo); }
+.cobranca + .cobranca { margin-top: 10px; }
+.cobranca:active { opacity: 0.7; }
+.cobranca.urgente { background: var(--atraso-fundo); box-shadow: none; }
 
 .cobranca-topo {
   display: flex;
@@ -294,44 +330,51 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   gap: 12px;
 }
 .cobranca-nome {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .cobranca-sub {
   display: block;
-  margin-top: 3px;
+  margin-top: 4px;
   font-size: 12.5px;
   font-weight: 500;
   color: var(--tinta-2);
 }
-.cobranca.urgente .cobranca-sub { color: var(--atraso); font-weight: 600; }
+.cobranca.urgente .cobranca-sub { color: var(--atraso); font-weight: 700; }
 
-/* ── lista simples (clientes, parcelas, extrato) ───────────────────────── */
+/* ── listas: um cartão contendo linhas divididas por fio ───────────────── */
 
-.itens { border-top: var(--traco) solid var(--borda); }
+.itens {
+  background: var(--superficie);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
 
 .item {
   display: flex;
   align-items: center;
   gap: 14px;
   width: 100%;
-  padding: 14px 0;
+  padding: 14px 18px;
   text-align: left;
   color: inherit;
-  border-bottom: 1px solid var(--borda-suave);
+  border-bottom: 1px solid var(--linha);
 }
-.item:active { opacity: 0.55; }
+.itens .item:last-child { border-bottom: none; }
+.item:active { background: var(--papel); }
 
 .item-corpo { flex: 1; min-width: 0; }
 .item-nome, .item-sub { display: block; }
 .item-nome {
   font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.008em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -346,36 +389,48 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   white-space: nowrap;
 }
 .item-fim { flex: none; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
-.item-fim .item-sub { margin-top: 2px; }
+.item-fim .item-sub { margin-top: 3px; }
 
 .mais {
   display: block;
-  width: 100%;
-  padding: 12px 0 0;
+  padding: 12px 2px 0;
   text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--tinta-3);
 }
 
-/* ── extrato: rótulo à esquerda, quantia à direita ─────────────────────── */
+/* ── extrato: rótulo à esquerda, quantia à direita, dentro de um cartão ── */
 
-.extrato { margin: 14px 0 0; border-top: var(--traco) solid var(--borda); }
+.extrato {
+  margin: 0;
+  background: var(--superficie);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 0 18px;
+  overflow: hidden;
+}
 .extrato-linha {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--borda-suave);
-  width: 100%;
-  text-align: left;
-  color: inherit;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--linha);
 }
-.extrato-rotulo { font-size: 13px; font-weight: 500; color: var(--tinta-2); }
+.extrato-linha:last-child { border-bottom: none; }
+.extrato-rotulo { font-size: 13.5px; font-weight: 500; color: var(--tinta-2); }
 .extrato-linha dd { margin: 0; }
+/* Uma descrição (não uma quantia) pode ser longa demais para uma linha só —
+   ela quebra normalmente, em vez de forçar nowrap como todo valor em .cifra. */
+.extrato-linha dd.livre {
+  white-space: normal;
+  text-align: right;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 13.5px;
+  max-width: 60%;
+}
 
 /* ── parcelas ─────────────────────────────────────────────────────────── */
 
@@ -384,174 +439,167 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   align-items: center;
   gap: 13px;
   width: 100%;
-  padding: 12px 0;
+  padding: 13px 18px;
   text-align: left;
   color: inherit;
-  border-bottom: 1px solid var(--borda-suave);
+  border-bottom: 1px solid var(--linha);
 }
-.parcela:active { opacity: 0.55; }
+.itens .parcela:last-child { border-bottom: none; }
+.parcela:active { background: var(--papel); }
 .parcela-numero {
   flex: none;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
-  border: 1.5px solid var(--borda-suave);
-  border-radius: var(--raio);
+  border-radius: var(--pilula);
+  background: var(--papel);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--tinta-3);
 }
-.parcela.paga .parcela-numero {
-  background: var(--recebido);
-  border-color: var(--recebido);
-  color: #fff;
-}
-.parcela.atrasada .parcela-numero { border-color: var(--atraso); color: var(--atraso); }
+.parcela.paga .parcela-numero { background: var(--recebido); color: #fff; }
+.parcela.atrasada .parcela-numero { background: var(--atraso-fundo); color: var(--atraso); }
 .parcela-info { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; }
 .parcela-sub { display: block; font-size: 11.5px; font-weight: 500; color: var(--tinta-3); margin-top: 1px; }
 .parcela.paga .parcela-info, .parcela.paga .parcela-valor { color: var(--tinta-3); }
 
-/* ── botões: com borda, com peso ───────────────────────────────────────── */
+/* ── botões: pílula ───────────────────────────────────────────────────── */
 
 .botao {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 50px;
-  padding: 0 20px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
-  font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  height: 52px;
+  padding: 0 22px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--pilula);
+  font-size: 14.5px;
+  font-weight: 700;
   white-space: nowrap;
   color: var(--tinta);
-  background: var(--papel);
-  transition: opacity 0.1s;
+  background: var(--superficie);
+  transition: opacity 0.12s, transform 0.08s;
 }
-.botao:active { opacity: 0.65; }
-.botao:disabled { opacity: 0.3; pointer-events: none; }
+.botao:active { opacity: 0.7; transform: scale(0.98); }
+.botao:disabled { opacity: 0.35; pointer-events: none; }
 .botao .icone { width: 15px; height: 15px; }
 
-.botao-primario {
-  background: var(--invertido-fundo);
-  border-color: var(--invertido-fundo);
-  color: var(--invertido-tinta);
-}
-.botao-perigo { color: var(--atraso); border-color: var(--atraso); }
+.botao-primario { background: var(--acento); border-color: var(--acento); color: var(--acento-tinta); }
+.botao-perigo { color: var(--atraso); border-color: var(--atraso-fundo); background: var(--atraso-fundo); }
 .botao-bloco { width: 100%; }
-.botao-baixo { height: 42px; font-size: 11px; }
+.botao-baixo { height: 42px; font-size: 12.5px; padding: 0 18px; }
 
-.acoes { display: grid; gap: 8px; margin-top: 12px; }
+.acoes { display: grid; gap: 10px; margin-top: 14px; }
 .acoes-duplas { grid-template-columns: 1fr 1fr; }
 
 .rodape-acao {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   z-index: 25;
-  padding: 12px var(--margem) calc(12px + env(safe-area-inset-bottom));
-  background: var(--papel);
-  border-top: var(--traco) solid var(--borda);
+  padding: 14px var(--margem) calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--papel) 70%, transparent);
 }
 .rodape-acao-interno { max-width: var(--largura); margin: 0 auto; }
 
 /* ── formulário ───────────────────────────────────────────────────────── */
 
-.campo { margin-top: 24px; }
+.campo { margin-top: 26px; }
 .campo:first-child { margin-top: 8px; }
-.campo .etiqueta { display: block; margin-bottom: 8px; color: var(--tinta); }
-.campo-dica { font-size: 11.5px; font-weight: 500; color: var(--tinta-3); margin: 8px 0 0; line-height: 1.5; }
+.campo .etiqueta { display: block; margin-bottom: 9px; }
+.campo-dica { font-size: 12px; font-weight: 500; color: var(--tinta-3); margin: 9px 2px 0; line-height: 1.5; }
 
 .entrada {
   width: 100%;
-  height: 48px;
-  padding: 0 13px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
-  background: var(--papel);
+  height: 50px;
+  padding: 0 16px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-sm);
+  background: var(--superficie);
   color: var(--tinta);
   font-size: 16px;
   font-weight: 600;
   outline: none;
   appearance: none;
+  transition: border-color 0.15s;
 }
-.entrada:focus { outline: 2px solid var(--tinta); outline-offset: -3px; }
+.entrada:focus { border-color: var(--acento); }
 .entrada::placeholder { color: var(--tinta-3); font-weight: 500; }
-textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-height: 1.5; resize: vertical; }
+textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-height: 1.55; resize: vertical; }
 
+/* O valor digitado é a única entrada em serifa: é um número em formação, e
+   merece o mesmo peso visual do valor em caixa que ele vai virar. */
 .entrada-dinheiro {
   display: flex;
   align-items: center;
-  gap: 9px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
-  padding-left: 13px;
+  gap: 8px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-sm);
+  padding-left: 16px;
+  transition: border-color 0.15s;
 }
-.entrada-dinheiro:focus-within { outline: 2px solid var(--tinta); outline-offset: -3px; }
-.entrada-dinheiro span { font-size: 14px; font-weight: 700; color: var(--tinta-3); }
+.entrada-dinheiro:focus-within { border-color: var(--acento); }
+.entrada-dinheiro span { font-size: 15px; font-weight: 700; color: var(--tinta-3); }
 .entrada-dinheiro input {
   flex: 1;
   min-width: 0;
-  height: 56px;
+  height: 58px;
   border: none;
   background: none;
   outline: none;
-  padding: 0 13px 0 0;
-  font-size: 26px;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
+  padding: 0 16px 0 0;
+  font-family: var(--serif);
+  font-size: 27px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.015em;
 }
 
 .busca { position: relative; display: flex; align-items: center; }
-.busca .icone { position: absolute; left: 12px; color: var(--tinta-3); width: 16px; height: 16px; pointer-events: none; }
-.busca .entrada { padding-left: 36px; height: 44px; font-size: 15px; }
+.busca .icone { position: absolute; left: 16px; color: var(--tinta-3); width: 16px; height: 16px; pointer-events: none; }
+.busca .entrada { padding-left: 42px; height: 46px; border-radius: var(--pilula); font-size: 15px; }
 
-/* Escolhas: retângulos com borda. A ativa inverte. */
-.opcoes { display: flex; gap: 7px; flex-wrap: wrap; }
+/* Escolhas rápidas: pílulas pequenas, a ativa preenchida de verde. */
+.opcoes { display: flex; gap: 8px; flex-wrap: wrap; }
 .opcao {
-  min-width: 52px;
-  height: 42px;
-  padding: 0 14px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
+  min-width: 50px;
+  height: 40px;
+  padding: 0 15px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--pilula);
   font-size: 13px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--tinta);
-  background: var(--papel);
-  transition: background 0.1s, color 0.1s;
+  color: var(--tinta-2);
+  background: var(--superficie);
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
-.opcao[aria-pressed="true"] {
-  background: var(--invertido-fundo);
-  border-color: var(--invertido-fundo);
-  color: var(--invertido-tinta);
-}
+.opcao[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--acento-tinta); }
 
-.passo { display: flex; align-items: stretch; gap: 7px; }
+.passo { display: flex; align-items: center; gap: 10px; }
 .passo button {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
+  border: 1.5px solid var(--linha);
+  border-radius: var(--pilula);
+  color: var(--tinta-2);
 }
-.passo button:active { background: var(--tinta); color: var(--papel); }
+.passo button:active { background: var(--linha); }
 .passo input {
-  width: 74px;
-  height: 46px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
-  background: none;
+  width: 64px;
+  height: 42px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-sm);
+  background: var(--superficie);
   outline: none;
   text-align: center;
-  font-size: 20px;
-  font-weight: 800;
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   appearance: textfield;
   -moz-appearance: textfield;
@@ -565,49 +613,66 @@ textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-heig
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  min-height: 56px;
-  padding: 0 13px;
-  border: var(--traco) solid var(--borda);
-  border-radius: var(--raio);
+  min-height: 58px;
+  padding: 0 16px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-sm);
+  background: var(--superficie);
   text-align: left;
   color: inherit;
 }
-.seletor-nome { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; }
-.seletor-vazio { font-size: 14px; font-weight: 600; color: var(--tinta-3); }
+.seletor-nome { font-family: var(--serif); font-size: 19px; font-weight: 600; }
+.seletor-vazio { font-size: 14.5px; font-weight: 600; color: var(--tinta-3); }
 
-/* ── prévia ───────────────────────────────────────────────────────────── */
+/* ── prévia da dívida ─────────────────────────────────────────────────── */
 
 .previa { margin-top: 4px; }
+.previa-total {
+  background: var(--superficie);
+  border-radius: var(--raio) var(--raio) 0 0;
+  box-shadow: var(--sombra);
+  padding: 18px 18px 4px;
+}
+.previa-total .etiqueta { display: block; margin-bottom: 6px; }
+.previa .extrato { border-radius: 0 0 var(--raio) var(--raio); box-shadow: var(--sombra); margin-top: 1px; }
 .previa-aviso {
-  border: var(--traco) dashed var(--borda-suave);
+  background: var(--superficie);
   border-radius: var(--raio);
-  padding: 16px;
-  font-size: 12.5px;
+  box-shadow: var(--sombra);
+  padding: 18px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--tinta-3);
   margin: 0;
 }
-.previa-erro { border-color: var(--atraso); color: var(--atraso); }
+.previa-erro { color: var(--atraso); }
 
 /* ── estado vazio ─────────────────────────────────────────────────────── */
 
 .vazio {
-  border: var(--traco) dashed var(--borda-suave);
+  background: var(--superficie);
   border-radius: var(--raio);
-  padding: 28px 20px;
+  box-shadow: var(--sombra);
+  padding: 30px 24px;
   text-align: left;
 }
-.vazio-titulo { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 7px; }
-.vazio-texto { font-size: 13px; font-weight: 500; color: var(--tinta-2); line-height: 1.55; margin: 0; max-width: 34ch; }
+.vazio-titulo {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.vazio-texto { font-size: 13.5px; font-weight: 500; color: var(--tinta-2); line-height: 1.6; margin: 0; max-width: 34ch; }
 .vazio .botao { margin-top: 18px; }
 
-.nota { font-size: 12px; font-weight: 500; color: var(--tinta-2); line-height: 1.55; margin: 12px 0 0; }
+.nota { font-size: 12.5px; font-weight: 500; color: var(--tinta-2); line-height: 1.6; margin: 14px 2px 0; }
 
 /* ── folha inferior ───────────────────────────────────────────────────── */
 
 .folha-camada { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; justify-content: center; }
 .folha-camada[hidden] { display: none; }
-.folha-fundo { position: absolute; inset: 0; background: rgba(14, 14, 14, 0.45); animation: surgir 0.15s ease-out; }
+.folha-fundo { position: absolute; inset: 0; background: rgba(31, 27, 22, 0.4); animation: surgir 0.18s ease-out; }
 .folha {
   position: relative;
   width: 100%;
@@ -615,16 +680,30 @@ textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-heig
   max-height: 88vh;
   overflow-y: auto;
   background: var(--papel);
-  border-top: var(--traco) solid var(--borda);
-  padding: 22px var(--margem) calc(22px + env(safe-area-inset-bottom));
-  animation: subir 0.2s cubic-bezier(0.22, 0.7, 0.3, 1);
+  border-radius: 28px 28px 0 0;
+  padding: 10px var(--margem) calc(24px + env(safe-area-inset-bottom));
+  animation: subir 0.22s cubic-bezier(0.22, 0.7, 0.3, 1);
 }
-.folha-titulo { font-size: 21px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 7px; }
+.folha-puxador {
+  width: 38px;
+  height: 4px;
+  border-radius: var(--pilula);
+  background: var(--linha);
+  margin: 0 auto 18px;
+}
+.folha-titulo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+  margin: 0 0 6px;
+}
 .folha-texto { font-size: 13px; font-weight: 500; color: var(--tinta-2); margin: 0 0 6px; line-height: 1.5; }
-.folha-acoes { margin-top: 26px; display: grid; gap: 8px; }
+.folha-acoes { margin-top: 28px; display: grid; gap: 10px; }
 .folha-lista { max-height: 52vh; overflow-y: auto; }
 
-@keyframes subir { from { transform: translateY(10px); } to { transform: none; } }
+@keyframes subir { from { transform: translateY(14px); opacity: 0.7; } to { transform: none; opacity: 1; } }
 @keyframes surgir { from { opacity: 0; } to { opacity: 1; } }
 
 /* ── aviso flutuante ──────────────────────────────────────────────────── */
@@ -632,17 +711,18 @@ textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-heig
 .aviso {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--abas-altura) + env(safe-area-inset-bottom) + 16px);
+  bottom: calc(var(--abas-altura) + env(safe-area-inset-bottom) + 18px);
   transform: translateX(-50%);
   z-index: 80;
-  background: var(--invertido-fundo);
-  color: var(--invertido-tinta);
-  padding: 12px 18px;
-  border-radius: var(--raio);
-  font-size: 12.5px;
-  font-weight: 700;
-  animation: subir 0.15s ease-out;
-  max-width: calc(100% - 36px);
+  background: var(--tinta);
+  color: var(--papel);
+  padding: 11px 20px;
+  border-radius: var(--pilula);
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: var(--sombra);
+  animation: subir 0.18s ease-out;
+  max-width: calc(100% - 40px);
   text-align: center;
 }
 .aviso[hidden] { display: none; }
@@ -650,14 +730,3 @@ textarea.entrada { height: auto; min-height: 80px; padding: 11px 13px; line-heig
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
-
-/* ── tons ─────────────────────────────────────────────────────────────────
-   No fim do arquivo de propósito: são utilitários de uma classe só que
-   convivem com classes de componente que também definem cor. Com a mesma
-   especificidade vence quem vem por último, e quem precisa vencer é o tom —
-   um atraso cinza deixa de ser um aviso. */
-
-.tom-atraso { color: var(--atraso); }
-.tom-recebido { color: var(--recebido); }
-.tom-suave { color: var(--tinta-2); }
-.tom-fraco { color: var(--tinta-3); }

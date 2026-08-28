@@ -75,7 +75,7 @@ function linhaCliente(estado) {
 
   return `<button class="item" data-acao="abrir-cliente" data-cliente="${esc(cliente.id)}">
     <span class="item-corpo">
-      <span class="item-nome">${esc(cliente.nome)}</span>
+      <span class="item-nome nome-pessoa">${esc(cliente.nome)}</span>
       ${sub ? `<span class="item-sub">${esc(sub)}</span>` : ''}
     </span>
     <span class="item-fim">

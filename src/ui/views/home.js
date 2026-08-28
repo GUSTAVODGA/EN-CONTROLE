@@ -9,7 +9,7 @@
 // depois. Nada mais cabe aqui.
 
 import { cabecalhoSecao, estadoVazio } from '../dom.js';
-import { blocoCaixa, trincaDeNumeros, blocoCobranca, linhaAgenda } from '../pieces.js';
+import { blocoResumoCaixa, blocoCobranca, linhaAgenda } from '../pieces.js';
 import { agruparPorCliente } from '../../core/portfolio.js';
 import { formatarReais } from '../../core/money.js';
 
@@ -32,8 +32,7 @@ function conteudo(ctx) {
   return `
     ${ctx.dados.exemplo ? avisoExemplo() : ''}
 
-    ${blocoCaixa(pano)}
-    ${trincaDeNumeros(pano)}
+    ${blocoResumoCaixa(pano)}
 
     ${paraCobrar.length > 0 ? `<section class="secao">
       ${cabecalhoSecao('Cobrar agora', formatarReais(totalACobrar))}
@@ -75,8 +74,8 @@ function primeiraVez() {
 }
 
 function avisoExemplo() {
-  return `<p class="nota" style="margin:0 0 14px;display:flex;align-items:center;gap:10px">
-    <span class="etiqueta" style="color:var(--tinta-2)">Dados de exemplo</span>
-    <button class="botao botao-baixo" style="height:30px;padding:0 12px" data-acao="limpar-exemplo">Limpar</button>
-  </p>`;
+  return `<div style="display:flex;align-items:center;gap:12px;margin:0 0 16px">
+    <span class="etiqueta">Dados de exemplo</span>
+    <button class="botao botao-baixo" data-acao="limpar-exemplo">Limpar</button>
+  </div>`;
 }

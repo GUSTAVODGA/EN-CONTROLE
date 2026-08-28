@@ -1,8 +1,10 @@
 // Peças visuais compartilhadas.
 //
-// Duas regras de composição valem para todas: o número fica à direita e é a
+// Duas regras valem para todas. Composição: o número fica à direita e é a
 // coisa mais pesada da linha; o que explica o número fica à esquerda, menor.
-// Blocos são fechados por traço, nunca por sombra.
+// Tipografia: serifa (Fraunces) é só para o valor em caixa e para nomes de
+// pessoa — o resto é sempre Manrope em negrito. É o que dá à serifa o peso de
+// "isto importa" em vez de virar papel de parede.
 
 import { esc, classes } from './dom.js';
 import { formatarReais, formatarPercentual } from '../core/money.js';
@@ -10,20 +12,27 @@ import { formatarDataCurta, distanciaEmPalavras } from '../core/dates.js';
 import { SITUACAO } from '../core/debt.js';
 import { rotuloPeriodicidade } from '../core/schedule.js';
 
-/** O bloco âncora do Início: preto sólido, número invertido. */
-export function blocoCaixa(pano) {
-  return `<div class="bloco bloco-forte">
+/**
+ * O bloco âncora do Início: o único bloco de cor da tela, com o único número
+ * em serifa. Os três números de apoio moram dentro dele, separados por um
+ * fio — é a mesma peça, não um cartão hero mais uma régua solta embaixo.
+ */
+export function blocoResumoCaixa(pano) {
+  return `<div class="bloco-forte">
     <span class="etiqueta">Em caixa</span>
-    <div class="cifra cifra-heroi" style="margin-top:7px">${esc(formatarReais(pano.emCaixaCents))}</div>
+    <span class="cifra-heroi">${esc(formatarReais(pano.emCaixaCents))}</span>
+    <div class="resumo-linhas">
+      ${colunaResumo('Na rua', pano.naRuaCents)}
+      ${colunaResumo('A receber', pano.aReceberCents)}
+      ${colunaResumo('Atrasado', pano.atrasadoCents, pano.atrasadoCents > 0 ? 'tom-atraso' : '')}
+    </div>
   </div>`;
 }
 
-/** Na rua, a receber e atrasado dividindo uma régua de três colunas. */
-export function trincaDeNumeros(pano) {
-  return `<div class="trinca">
-    ${itemTrinca('Na rua', pano.naRuaCents)}
-    ${itemTrinca('A receber', pano.aReceberCents)}
-    ${itemTrinca('Atrasado', pano.atrasadoCents, pano.atrasadoCents > 0 ? 'tom-atraso' : '')}
+function colunaResumo(rotulo, cents, tom = '') {
+  return `<div class="resumo-col">
+    <span class="etiqueta">${esc(rotulo)}</span>
+    <span class="cifra cifra-media ${tom}">${esc(formatarReais(cents))}</span>
   </div>`;
 }
 
@@ -59,7 +68,7 @@ export function blocoCobranca(grupo, hojeIso) {
 export function linhaAgenda(item, hojeIso) {
   return `<button class="item" data-acao="pagar" data-divida="${esc(item.dividaId)}" data-parcela="${item.numero}">
     <span class="item-corpo">
-      <span class="item-nome">${esc(item.clienteNome)}</span>
+      <span class="item-nome nome-pessoa">${esc(item.clienteNome)}</span>
       <span class="item-sub">parcela ${item.numero} de ${item.totalParcelas}${item.parcial ? ' · parcial' : ''}</span>
     </span>
     <span class="item-fim">
@@ -69,11 +78,16 @@ export function linhaAgenda(item, hojeIso) {
   </button>`;
 }
 
-/** Uma linha de extrato: rótulo à esquerda, quantia à direita. */
-export function linhaExtrato(rotulo, valor, tom = '') {
+/**
+ * Uma linha de extrato: rótulo à esquerda, quantia à direita.
+ *
+ * @param {boolean} livre  o valor é uma descrição, não uma quantia — pode
+ *   quebrar em mais de uma linha, em vez de forçar nowrap como todo .cifra.
+ */
+export function linhaExtrato(rotulo, valor, tom = '', livre = false) {
   return `<div class="extrato-linha">
     <dt class="extrato-rotulo">${esc(rotulo)}</dt>
-    <dd class="cifra cifra-peq ${tom}">${esc(valor)}</dd>
+    <dd class="${livre ? 'livre' : 'cifra cifra-peq'} ${tom}">${esc(valor)}</dd>
   </div>`;
 }
 
@@ -149,7 +163,7 @@ export function fatosDaDivida(estado) {
     ${linhaExtrato('Valor total', formatarReais(estado.totalCents))}
     ${linhaExtrato('Recebido', formatarReais(estado.aplicadoCents))}
     ${linhaExtrato('Parcelas', `${estado.contagem.pagas} pagas · ${estado.contagem.pendentes} pendentes${
-      estado.contagem.atrasadas > 0 ? ` · ${estado.contagem.atrasadas} atrasadas` : ''}`)}
+      estado.contagem.atrasadas > 0 ? ` · ${estado.contagem.atrasadas} atrasadas` : ''}`, '', true)}
     ${linhaExtrato('Próximo vencimento', estado.proximoVencimento ? formatarDataCurta(estado.proximoVencimento) : '—')}
   </dl>`;
 }

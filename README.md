@@ -42,31 +42,41 @@ versionado é exatamente o que é servido.
 
 ## Direção visual
 
-A referência é **painel de controle impresso**, não aplicativo: fundo branco,
-blocos fechados por traço preto, número grande e pesado, rótulo em caixa alta.
+A referência é uma peça editorial bem composta, não um aplicativo bancário:
+fundo bege quente, cartões brancos com sombra suave (nunca borda dura), um
+único bloco de cor — verde-escuro — que ancora cada tela, e botões em pílula.
 
-Três decisões definem o resto:
+**A regra de ouro é a tipografia, e ela é a coisa mais importante do sistema.**
+A serifa (Fraunces) é reservada para DUAS coisas só: o valor em caixa — o
+número que a tela existe para responder — e nomes de pessoa. Todo o resto
+(estatística, total de dívida, parcela, rótulo) é Manrope em negrito. Não é
+estética, é hierarquia: se tudo fosse serifado, nada seria especial.
 
-1. **Borda, não sombra.** Cada bloco é fechado por um traço de 1,5px na cor da
-   tinta. Não existe uma única `box-shadow` no produto.
-2. **Peso.** Números em 800, nomes em 700, rótulos em 700 e caixa alta. A
-   hierarquia se lê de longe, com o celular na mão e sol na tela.
-3. **Inversão.** O número mais importante da tela vive num bloco preto sólido
-   com texto branco — um por tela, no máximo. É o que ancora a página.
-
-Tipografia: **Archivo**, grotesca de traço industrial, hospedada em `fontes/`
-e com algarismos de largura fixa. Cor é informação, não decoração: a paleta é
-tinta, papel e dois tons — atraso e recebido.
+O que este sistema não usa: cartão sobre fundo cinza corporativo, borda grossa
+como ornamento, caixa alta em tudo, ícone decorativo, esquina reta, sombra
+dura. Sobraram seis ícones no produto inteiro — voltar, avançar, buscar,
+somar, subtrair, editar — nenhum decorativo.
 
 **A lista principal do Início é de clientes, não de parcelas.** Cobrança se faz
-por pessoa: um cliente com quatro parcelas vencidas é uma ligação, não quatro
-linhas. `agruparPorCliente()` soma o que cada um deve agora, e "atrasado" e
-"vence hoje" moram na mesma seção porque são a mesma tarefa.
+por pessoa: um cliente com quatro parcelas vencidas ocupa um cartão, não
+quatro linhas. `agruparPorCliente()` soma o que cada um deve agora, e
+"atrasado" e "vence hoje" moram na mesma seção — "Cobrar agora" — porque são a
+mesma tarefa.
 
-Uma consequência prática está no fim do `style.css`: as classes de tom
-(`.tom-atraso` e companhia) ficam no final do arquivo de propósito, porque
-convivem com classes de componente que também definem cor. Com a mesma
-especificidade, vence quem vem por último — e quem precisa vencer é o tom.
+Duas consequências práticas registradas no código:
+
+- As classes de tom (`.tom-atraso` e companhia) ficam no fim do `style.css` de
+  propósito: convivem com classes de componente que também definem cor, e com
+  a mesma especificidade, vence quem vem por último — e quem precisa vencer é
+  o tom.
+- Um valor descritivo longo (o resumo de parcelas, a composição das parcelas
+  na prévia) usa a variante `livre` de `linhaExtrato()`, que quebra em mais de
+  uma linha em vez de forçar `nowrap` como toda quantia — a mesma regra que
+  corrige o número dentro do bloco verde, onde o tamanho é fixado por seletor
+  mais específico para nunca truncar.
+
+As fontes (Fraunces e Manrope) são hospedadas em `fontes/`: o app abre offline
+e fica idêntico em qualquer aparelho.
 
 ## Os quatro conceitos financeiros
 

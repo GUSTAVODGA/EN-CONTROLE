@@ -21,9 +21,9 @@ export function telaCaixa(ctx) {
   return {
     titulo: 'Caixa',
     html: `
-      <div class="bloco bloco-forte">
+      <div class="bloco-forte">
         <span class="etiqueta">Em caixa</span>
-        <div class="cifra cifra-heroi" style="margin-top:7px">${esc(formatarReais(pano.emCaixaCents))}</div>
+        <span class="cifra-heroi">${esc(formatarReais(pano.emCaixaCents))}</span>
       </div>
 
       <dl class="extrato">

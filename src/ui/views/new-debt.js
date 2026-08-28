@@ -203,7 +203,7 @@ function previa() {
       ${linhaExtrato('Valor', formatarReais(c.baseCents))}
       ${linhaExtrato('Juros', `${formatarPercentual(c.jurosPercentual)} · ${formatarReais(c.jurosCents)}`)}
       ${linhaExtrato('Total', formatarReais(c.totalCents))}
-      ${linhaExtrato('Parcelas', descricaoParcelas)}
+      ${linhaExtrato('Parcelas', descricaoParcelas, '', true)}
       ${linhaExtrato('Primeiro vencimento', formatarData(c.primeiroVencimento))}
       ${linhaExtrato('Último vencimento', formatarData(c.ultimoVencimento))}
     </dl>
@@ -334,6 +334,6 @@ function abrirSeletorDeCliente(ctx) {
 
 function itemCliente(cliente) {
   return `<button class="item" data-escolher="${esc(cliente.id)}" data-nome="${esc(cliente.nome.toLowerCase())}">
-    <span class="item-corpo"><span class="item-nome">${esc(cliente.nome)}</span></span>
+    <span class="item-corpo"><span class="item-nome nome-pessoa">${esc(cliente.nome)}</span></span>
   </button>`;
 }
