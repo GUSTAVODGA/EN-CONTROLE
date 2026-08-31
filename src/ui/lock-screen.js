@@ -38,6 +38,10 @@ const elAbas = () => document.getElementById('abas');
  *   manda na tela é `app.js`.
  */
 export function iniciarTrava(aoDesbloquear) {
+  // A trava não usa a barra de topo — escondida de vez (não só vazia), porque
+  // `.topo` reserva altura fixa mesmo sem conteúdo, e `.trava` já cuida da
+  // própria margem de topo sozinha (ver `padding-top` em `.trava` no CSS).
+  elTopo().hidden = true;
   elTopo().innerHTML = '';
   elAbas().hidden = true;
   elAbas().innerHTML = '';

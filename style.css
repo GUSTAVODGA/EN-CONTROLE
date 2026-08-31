@@ -127,6 +127,10 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s;
 }
+/* Sem isto, `display: flex` acima empata em especificidade com a regra padrão
+   do navegador para `[hidden]` e vence por vir depois — o atributo sozinho
+   não escondia a barra de verdade. */
+.topo[hidden] { display: none; }
 .topo.rolado { border-bottom-color: var(--linha); }
 
 /* Todo título de tela é serifado — é a assinatura do produto, presente do
@@ -160,7 +164,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   padding: 8px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
   outline: none;
 }
-.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 110px); }
+.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
 
 /* ── navegação ─────────────────────────────────────────────────────────── */
 
@@ -738,7 +742,7 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   padding-top: max(24px, env(safe-area-inset-top));
 }
 
-.trava-topo { margin-bottom: 28px; }
+.trava-topo { margin-bottom: 16px; }
 .trava-titulo {
   font-family: var(--serif);
   font-size: 25px;
@@ -751,12 +755,12 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
 
 .trava-pontos {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   align-content: flex-start;
-  min-height: 16px;
-  margin: 0 auto 10px;
-  max-width: 300px;
+  min-height: 14px;
+  margin: 0 auto 8px;
+  max-width: 250px;
 }
 .trava-ponto {
   width: 14px;
@@ -787,9 +791,9 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
 .trava-teclado {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  max-width: 300px;
-  margin: 8px auto 28px;
+  gap: 10px;
+  max-width: 250px;
+  margin: 4px auto 16px;
 }
 .trava-tecla {
   aspect-ratio: 1;
@@ -797,7 +801,7 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   background: var(--superficie);
   box-shadow: var(--sombra);
   font-family: var(--serif);
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 500;
   color: var(--tinta);
   display: flex;

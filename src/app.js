@@ -121,6 +121,9 @@ function desenhar({ manterFoco = null, preservarRolagem = false } = {}) {
 
   const rolagem = preservarRolagem ? window.scrollY : 0;
 
+  // A tela de trava esconde a barra de topo por completo (não só vazia) —
+  // toda renderização normal do app precisa trazê-la de volta.
+  elTopo.hidden = false;
   elTopo.innerHTML = `
     ${tela.voltar ? `<button class="topo-acao voltar" data-acao="voltar" aria-label="Voltar">${icones.esquerda}</button>` : ''}
     <span class="topo-titulo ${tela.tituloEmDestaque ? 'nome' : ''}">${esc(tela.titulo)}</span>
