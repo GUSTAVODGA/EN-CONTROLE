@@ -54,8 +54,8 @@ estética, é hierarquia: se tudo fosse serifado, nada seria especial.
 
 O que este sistema não usa: cartão sobre fundo cinza corporativo, borda grossa
 como ornamento, caixa alta em tudo, ícone decorativo, esquina reta, sombra
-dura. Sobraram sete ícones no produto inteiro — voltar, avançar, buscar,
-somar, subtrair, editar, apagar — nenhum decorativo.
+dura. Sobraram seis ícones no produto inteiro — voltar, avançar, buscar,
+somar, subtrair, editar — nenhum decorativo.
 
 **A lista principal do Início é de clientes, não de parcelas.** Cobrança se faz
 por pessoa: um cliente com quatro parcelas vencidas ocupa um cartão, não
@@ -168,45 +168,6 @@ os seus dados.
 Trocar por Firestore é trocar o adaptador — nenhuma regra financeira muda,
 porque toda a camada de cálculo é pura e derivada. É o próximo passo natural.
 
-## Segurança
-
-O app abre atrás de um código de acesso numérico (mínimo de 8 dígitos), criado
-no primeiro uso de cada aparelho. Não é só uma tela de bloqueio: os quatro
-dados do produto (`clientes`, `dividas`, `pagamentos`, `caixa`) ficam
-**cifrados de verdade** dentro do `localStorage`, com AES-GCM de 256 bits. A
-chave nunca é o código digitado — é derivada dele por PBKDF2 (210 mil
-iterações, sal aleatório por aparelho), o mesmo desenho usado por gerenciadores
-de senha para tornar um ataque por força bruta caro. `src/core/crypto.js` e
-`src/core/lock.js` concentram toda essa camada; nenhum outro arquivo do
-produto sabe que os dados estão cifrados.
-
-Depois de 3 tentativas erradas seguidas, o aparelho **entra em espera**: cada
-nova tentativa exige esperar cada vez mais (30s, 1min, 2min, 5min... até um
-teto de 15min), e nem o código certo é aceito enquanto a espera não passar.
-É o que torna inviável ficar tentando adivinhar direto na tela do aparelho —
-o contador vive no próprio armazenamento, então recarregar a página não
-zera a espera de graça.
-
-Vale ser honesto sobre o que essa proteção cobre e o que não cobre:
-
-- **Protege** contra alguém abrir o aparelho e simplesmente olhar os dados —
-  seja folheando o app sem o código, seja tentando adivinhar o código na
-  tela (o bloqueio progressivo cuida disso), seja inspecionando o
-  `localStorage` diretamente. Sem o código certo, o que existe no disco é
-  ruído.
-- **Não protege** contra um atacante técnico determinado com acesso direto
-  ao arquivo cifrado, fora da tela do app: aí o bloqueio progressivo não
-  existe mais, e resta só o PBKDF2 encarecendo cada tentativa offline — caro,
-  mas não impossível para um código curto. Quanto maior o código, mais forte
-  a proteção — vale usar mais que o mínimo de 8 dígitos se o aparelho puder
-  ser perdido ou roubado.
-- **Cada aparelho tem seu próprio código**, exatamente como cada aparelho já
-  tinha seus próprios dados: não é uma conta, não há servidor, não há "esqueci
-  a senha" por e-mail. Errar o código não revela nada — nem um byte do dado
-  real é tocado antes de bater. Mas esquecê-lo de vez também não tem volta: a
-  única saída é apagar tudo daquele aparelho e recomeçar vazio ("Esqueci o
-  código" na própria tela de trava faz isso, e avisa antes de agir).
-
 ## Costura para o futuro
 
 Juntar uma dívida nova a uma existente será modelado como **substituição**: as
@@ -217,8 +178,6 @@ ligar essa funcionalidade depois não vai exigir migração de dados.
 
 ## Fora do escopo, de propósito
 
-Sem conta de usuário nem sincronia entre sócios (o código de acesso trava o
-aparelho, não substitui um login de verdade), sem relatórios, sem exportação,
-sem notificações, sem catálogo de produtos, sem tela de configurações. A
-primeira etapa é a fundação: modelo de dados, navegação e a primeira
-experiência visual funcional.
+Sem login, sem relatórios, sem exportação, sem notificações, sem catálogo de
+produtos, sem tela de configurações. A primeira etapa é a fundação: modelo de
+dados, navegação e a primeira experiência visual funcional.

@@ -127,10 +127,6 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   border-bottom: 1px solid transparent;
   transition: border-color 0.15s;
 }
-/* Sem isto, `display: flex` acima empata em especificidade com a regra padrão
-   do navegador para `[hidden]` e vence por vir depois — o atributo sozinho
-   não escondia a barra de verdade. */
-.topo[hidden] { display: none; }
 .topo.rolado { border-bottom-color: var(--linha); }
 
 /* Todo título de tela é serifado — é a assinatura do produto, presente do
@@ -164,7 +160,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   padding: 8px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
   outline: none;
 }
-.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 12px); }
+.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 110px); }
 
 /* ── navegação ─────────────────────────────────────────────────────────── */
 
@@ -731,101 +727,6 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   text-align: center;
 }
 .aviso[hidden] { display: none; }
-
-/* ── tela de trava ────────────────────────────────────────────────────── */
-
-.trava {
-  min-height: calc(100vh - var(--margem) * 2);
-  min-height: calc(100dvh - var(--margem) * 2);
-  display: flex;
-  flex-direction: column;
-  padding-top: max(24px, env(safe-area-inset-top));
-}
-
-.trava-topo { margin-bottom: 10px; }
-.trava-titulo {
-  font-family: var(--serif);
-  font-size: 25px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-  margin: 0 0 8px;
-}
-.trava-texto { font-size: 13.5px; font-weight: 500; color: var(--tinta-2); line-height: 1.5; margin: 0; max-width: 34ch; }
-
-.trava-pontos {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  min-height: 12px;
-  margin: 0 auto 6px;
-  max-width: 280px;
-}
-.trava-ponto {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--acento);
-  flex: none;
-}
-
-.trava-erro {
-  color: var(--atraso);
-  font-size: 13px;
-  font-weight: 600;
-  min-height: 16px;
-  margin: 0 0 6px;
-}
-.trava-erro[hidden] { visibility: hidden; }
-
-/* O tremor de senha errada: um sacode curto e simétrico, sem exagero. */
-.trava.tremendo { animation: tremer 0.4s ease-in-out; }
-@keyframes tremer {
-  10%, 90% { transform: translateX(-1px); }
-  20%, 80% { transform: translateX(2px); }
-  30%, 50%, 70% { transform: translateX(-5px); }
-  40%, 60% { transform: translateX(5px); }
-}
-
-.trava-teclado {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  max-width: 280px;
-  margin: 2px auto 12px;
-}
-.trava-tecla {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--superficie);
-  box-shadow: var(--sombra);
-  font-family: var(--serif);
-  font-size: 26px;
-  font-weight: 500;
-  color: var(--tinta);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.trava-tecla:active { background: var(--papel); box-shadow: none; }
-.trava-tecla:disabled { opacity: 0.35; }
-.trava-apagar { background: none; box-shadow: none; color: var(--tinta-2); }
-.trava-apagar:active { color: var(--tinta); background: none; }
-.trava-apagar:disabled { opacity: 0.35; }
-.trava-apagar .icone { width: 22px; height: 22px; }
-
-.trava .botao { margin-top: auto; }
-
-.trava-link {
-  display: block;
-  margin: 18px auto 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--tinta-2);
-  text-align: center;
-}
-.trava-link:active { color: var(--tinta); }
 
 /* ── tons ─────────────────────────────────────────────────────────────────
    No fim do arquivo de propósito: são utilitários de uma classe só que
