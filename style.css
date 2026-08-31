@@ -90,6 +90,12 @@
 
 html, body { margin: 0; padding: 0; height: 100%; }
 
+/* O iOS ignora "user-scalable=no" por acessibilidade — o toque duplo-vira-
+   zoom só é realmente eliminado por aqui, dizendo ao navegador que nenhum
+   elemento da tela precisa de gesto de zoom, e é isso que também acaba com
+   o atraso do primeiro toque enquanto ele tentava decidir se era zoom. */
+html { touch-action: manipulation; }
+
 body {
   background: var(--papel);
   color: var(--tinta);
