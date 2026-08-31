@@ -9,14 +9,14 @@
 // custa mais caro do que uma abertura offline mais lenta. O cache existe para
 // o aplicativo abrir sem sinal, não para acelerar o caso normal.
 
-const CACHE = 'en-controle-v7';
+const CACHE = 'en-controle-v8';
 
 // O "?v=" de style.css abaixo tem que ser sempre igual ao de index.html —
 // os dois sobem juntos a cada mudança em style.css.
 const ESSENCIAIS = [
   './',
   './index.html',
-  './style.css?v=7',
+  './style.css?v=8',
   './fontes/fraunces.woff2',
   './fontes/manrope.woff2',
   './manifest.json',

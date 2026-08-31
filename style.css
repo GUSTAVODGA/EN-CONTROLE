@@ -164,7 +164,7 @@ button { cursor: pointer; background: none; border: none; padding: 0; }
   padding: 8px var(--margem) calc(var(--abas-altura) + env(safe-area-inset-bottom) + 36px);
   outline: none;
 }
-.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 20px); }
+.tela.sem-abas { padding-bottom: calc(env(safe-area-inset-bottom) + 12px); }
 
 /* ── navegação ─────────────────────────────────────────────────────────── */
 
@@ -742,7 +742,7 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   padding-top: max(24px, env(safe-area-inset-top));
 }
 
-.trava-topo { margin-bottom: 16px; }
+.trava-topo { margin-bottom: 10px; }
 .trava-titulo {
   font-family: var(--serif);
   font-size: 25px;
@@ -758,9 +758,9 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   gap: 10px;
   flex-wrap: wrap;
   align-content: flex-start;
-  min-height: 14px;
-  margin: 0 auto 8px;
-  max-width: 250px;
+  min-height: 12px;
+  margin: 0 auto 6px;
+  max-width: 280px;
 }
 .trava-ponto {
   width: 14px;
@@ -774,8 +774,8 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   color: var(--atraso);
   font-size: 13px;
   font-weight: 600;
-  min-height: 18px;
-  margin: 0 0 8px;
+  min-height: 16px;
+  margin: 0 0 6px;
 }
 .trava-erro[hidden] { visibility: hidden; }
 
@@ -791,9 +791,9 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
 .trava-teclado {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  max-width: 250px;
-  margin: 4px auto 16px;
+  gap: 14px;
+  max-width: 280px;
+  margin: 2px auto 12px;
 }
 .trava-tecla {
   aspect-ratio: 1;
@@ -801,7 +801,7 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   background: var(--superficie);
   box-shadow: var(--sombra);
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 500;
   color: var(--tinta);
   display: flex;
