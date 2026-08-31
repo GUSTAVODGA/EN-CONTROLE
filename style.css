@@ -749,7 +749,8 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   flex-wrap: wrap;
   align-content: flex-start;
   min-height: 16px;
-  margin-bottom: 10px;
+  margin: 0 auto 10px;
+  max-width: 300px;
 }
 .trava-ponto {
   width: 14px;
@@ -782,7 +783,7 @@ textarea.entrada { height: auto; min-height: 80px; padding: 13px 16px; line-heig
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   max-width: 300px;
-  margin: 8px 0 28px;
+  margin: 8px auto 28px;
 }
 .trava-tecla {
   aspect-ratio: 1;
